@@ -92,12 +92,20 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       </header>
 
       <div className="flex-1 flex relative">
+        {/* Mobile Backdrop Overlay */}
+        {mobileOpen && (
+          <div
+            onClick={() => setMobileOpen(false)}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-20 md:hidden"
+          />
+        )}
+
         {/* Navigation Sidebar */}
         <aside
           className={`bg-[#111827] border-r border-gray-800 transition-all duration-300 flex flex-col z-30 ${
             collapsed ? 'w-16' : 'w-64'
           } ${
-            mobileOpen ? 'translate-x-0 absolute inset-y-0 left-0 w-64 shadow-2xl' : '-translate-x-full md:translate-x-0'
+            mobileOpen ? 'translate-x-0 fixed inset-y-0 left-0 w-64 shadow-2xl top-16' : '-translate-x-full md:translate-x-0'
           }`}
         >
           <div className="p-3 border-b border-gray-800 hidden md:flex justify-end">

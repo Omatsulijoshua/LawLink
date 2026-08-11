@@ -2323,3 +2323,38 @@ body {
     font-size: 0.82rem;
   }
 }
+
+/* Comprehensive Mobile Responsiveness Enhancements */
+@media (max-width: 768px) {
+  .auth-modal, .admin-page-content {
+    width: 94vw !important;
+    max-width: 94vw !important;
+    max-height: 90vh !important;
+    padding: 16px !important;
+    margin: 0 auto !important;
+    overflow-y: auto !important;
+  }
+
+  .app-topbar-actions {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .app-topbar-actions button {
+    flex-shrink: 0;
+    font-size: 0.72rem !important;
+    padding: 6px 10px !important;
+  }
+
+  .lawyer-grid, .legal-generator-grid, .corporate-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cases-milestone-stepper {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
