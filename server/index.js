@@ -7,6 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { searchLegalDatabase } from '../src/utils/legalSearch.js';
+import { getAiConfig, updateAiKeys, getNextActiveKey, markKeyCooldown } from './aiRouter.js';
 
 // Load environmental variables
 dotenv.config();
@@ -986,6 +987,16 @@ app.post('/api/admin/publish-article', (req, res) => {
   } else {
     return res.status(401).json({ error: 'Invalid admin credentials.' });
   }
+});
+
+// AI Provider Key Pool & Failover Router Endpoints
+app.get('/api/admin/ai/keys', (req, res) => {
+  return res.json({ success: true, config: getAiConfig() });
+});
+
+app.post('/api/admin/ai/keys', (req, res) => {
+  const updated = updateAiKeys(req.body);
+  return res.json({ success: true, config: updated });
 });
 
 // Admin Login & Stats Calculator Endpoint
