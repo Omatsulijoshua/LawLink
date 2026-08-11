@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { X, Calendar, Clock, Video, Phone, MessageSquare, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Calendar, Clock, Video, Phone, MessageSquare, CheckCircle, AlertCircle, FileText } from 'lucide-react';
+import { InvoiceModal } from './InvoiceModal';
 
 export function AppointmentsModal({ appointments = [], onClose, onOpenWorkspace }) {
+  const [activeInvoiceApt, setActiveInvoiceApt] = useState(null);
+
   return (
     <div className="admin-page-container">
       <div className="watermark-bg"></div>
@@ -77,6 +80,15 @@ export function AppointmentsModal({ appointments = [], onClose, onOpenWorkspace 
                   <button
                     type="button"
                     className="btn-secondary"
+                    onClick={() => setActiveInvoiceApt(apt)}
+                    style={{ padding: '8px 12px', fontSize: '0.8rem' }}
+                  >
+                    <FileText size={14} />
+                    <span>Tax Receipt</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-secondary"
                     onClick={() => {
                       onClose();
                       onOpenWorkspace(apt);
@@ -102,6 +114,14 @@ export function AppointmentsModal({ appointments = [], onClose, onOpenWorkspace 
           )}
         </div>
       </div>
+
+      {activeInvoiceApt && (
+        <InvoiceModal
+          appointment={activeInvoiceApt}
+          paymentInfo={activeInvoiceApt.paymentInfo}
+          onClose={() => setActiveInvoiceApt(null)}
+        />
+      )}
     </div>
   );
 }

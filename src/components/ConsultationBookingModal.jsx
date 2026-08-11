@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, Calendar, Clock, Video, Phone, MessageSquare, MapPin, CheckCircle, ShieldCheck, CreditCard } from 'lucide-react';
+import { PaymentCheckoutModal } from './PaymentCheckoutModal';
 
 const SERVICES = [
   { id: 'advisory_30', name: '30-Min Legal Advisory', duration: '30 mins', fee: 15000, desc: 'Quick legal guidance and rights assessment' },
@@ -19,10 +20,14 @@ export function ConsultationBookingModal({ lawyer, onClose, onBookingComplete })
   const [selectedDate, setSelectedDate] = useState(DATES[0]);
   const [selectedTime, setSelectedTime] = useState(lawyer?.availableSlots?.[0] || '10:00 AM');
   const [caseNotes, setCaseNotes] = useState('');
+  const [showCheckout, setShowCheckout] = useState(false);
 
-  const handleConfirmBooking = (e) => {
+  const handleProceedToPayment = (e) => {
     e.preventDefault();
+    setShowCheckout(true);
+  };
 
+  const handleEscrowPaymentSuccess = (paymentInfo) => {
     const newAppointment = {
       id: 'apt-' + Date.now(),
       lawyerId: lawyer.id,
@@ -38,7 +43,10 @@ export function ConsultationBookingModal({ lawyer, onClose, onBookingComplete })
       currency: 'NGN',
       status: 'CONFIRMED',
       createdAt: Date.now(),
-      notes: caseNotes
+      notes: caseNotes,
+      txRef: paymentInfo.txRef,
+      escrowId: paymentInfo.escrowId,
+      paymentInfo
     };
 
     onBookingComplete(newAppointment);
@@ -205,7 +213,7 @@ export function ConsultationBookingModal({ lawyer, onClose, onBookingComplete })
 
         {/* STEP 3: SUMMARY & CONFIRMATION */}
         {step === 3 && (
-          <form onSubmit={handleConfirmBooking}>
+          <form onSubmit={handleProceedToPayment}>
             <h4 style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '12px' }}>
               Consultation Summary
             </h4>
@@ -224,7 +232,7 @@ export function ConsultationBookingModal({ lawyer, onClose, onBookingComplete })
                 <strong style={{ color: 'var(--gold-primary)' }}>{selectedChannel} • {selectedDate} at {selectedTime}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.92rem', paddingTop: '8px', borderTop: '1px solid var(--border-light)' }}>
-                <span style={{ color: '#fff', fontWeight: '600' }}>Total Fee:</span>
+                <span style={{ color: '#fff', fontWeight: '600' }}>Counsel Fee:</span>
                 <strong style={{ color: 'var(--gold-primary)', fontSize: '1.05rem' }}>₦{selectedService.fee.toLocaleString()} NGN</strong>
               </div>
             </div>
@@ -241,12 +249,22 @@ export function ConsultationBookingModal({ lawyer, onClose, onBookingComplete })
             <div style={{ display: 'flex', gap: '10px' }}>
               <button type="button" className="btn-secondary" onClick={() => setStep(2)} style={{ flex: 1 }}>Back</button>
               <button type="submit" className="btn-secondary" style={{ flex: 2, backgroundColor: 'var(--blue-primary)', borderColor: 'var(--blue-accent)', color: '#fff', fontWeight: '700', height: '42px' }}>
-                Confirm & Pay ₦{selectedService.fee.toLocaleString()}
+                Proceed to Escrow Checkout
               </button>
             </div>
           </form>
         )}
       </div>
+
+      {showCheckout && (
+        <PaymentCheckoutModal
+          amount={selectedService.fee}
+          lawyerName={lawyer.name}
+          serviceName={selectedService.name}
+          onClose={() => setShowCheckout(false)}
+          onPaymentSuccess={handleEscrowPaymentSuccess}
+        />
+      )}
     </div>
   );
 }
