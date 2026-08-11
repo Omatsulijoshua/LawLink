@@ -331,6 +331,22 @@ export function AdminDashboardModal({ onClose }) {
                 Analytics &amp; Usage
               </button>
               <button 
+                onClick={() => setActiveTab('lawyers')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  borderBottom: activeTab === 'lawyers' ? '2px solid var(--gold-primary)' : '2px solid transparent',
+                  color: activeTab === 'lawyers' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  padding: '8px 16px',
+                  fontWeight: activeTab === 'lawyers' ? '600' : '500',
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  transition: 'var(--transition-smooth)'
+                }}
+              >
+                ⚖️ Lawyer Verification Desk
+              </button>
+              <button 
                 onClick={() => setActiveTab('newsletter')}
                 style={{
                   background: 'none',
@@ -544,8 +560,55 @@ export function AdminDashboardModal({ onClose }) {
                   </div>
                 </div>
               </div>
+            ) : activeTab === 'lawyers' ? (
+              // TAB 2: LAWYER VERIFICATION DESK VIEW
+              <div className="dashboard-content">
+                <div className="subpanel-header" style={{ marginBottom: '16px' }}>
+                  <ShieldCheck size={20} style={{ color: 'var(--gold-primary)' }} />
+                  <h4 style={{ fontSize: '1.1rem', color: '#fff' }}>Lawyer Verification Applications & Audit Log</h4>
+                </div>
+
+                <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-light)', borderRadius: '10px', padding: '16px', overflowX: 'auto' }}>
+                  <table className="clients-table" style={{ width: '100%' }}>
+                    <thead>
+                      <tr>
+                        <th>Lawyer Name</th>
+                        <th>Bar Enrollment No.</th>
+                        <th>Practice Specialization</th>
+                        <th>Verification Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="email-cell">Barrister Nnamdi Bello</td>
+                        <td className="time-cell">SCN/048291</td>
+                        <td className="time-cell">Constitutional Rights</td>
+                        <td><span style={{ color: '#34d399', fontWeight: '600', fontSize: '0.78rem' }}>✓ VERIFIED</span></td>
+                        <td>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Approved</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="email-cell">Barrister Emeka Okafor</td>
+                        <td className="time-cell">SCN/109283</td>
+                        <td className="time-cell">Corporate & Business Law</td>
+                        <td><span style={{ color: '#f59e0b', fontWeight: '600', fontSize: '0.78rem' }}>⏳ PENDING</span></td>
+                        <td>
+                          <button type="button" className="btn-secondary" style={{ padding: '4px 10px', fontSize: '0.72rem', backgroundColor: 'var(--blue-primary)', color: '#fff', marginRight: '6px' }}>
+                            Approve
+                          </button>
+                          <button type="button" className="btn-secondary" style={{ padding: '4px 10px', fontSize: '0.72rem', color: '#f87171' }}>
+                            Reject
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             ) : (
-              // TAB 2: NEWSLETTER DESK VIEW
+              // TAB 3: NEWSLETTER DESK VIEW
               <div className="dashboard-content newsletter-desk-content">
                 <div className="newsletter-split-layout">
                   {/* Left Column Form */}

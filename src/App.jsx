@@ -6,8 +6,9 @@ import { DocumentExplorer } from './components/DocumentExplorer';
 import { RightPanel } from './components/RightPanel';
 import { AdminDashboardModal } from './components/AdminDashboardModal';
 import { ClientOnboardingModal } from './components/ClientOnboardingModal';
+import { LawyerDirectoryModal } from './components/LawyerDirectoryModal';
 import { fetchWithTimeout, getApiEndpoint, getApiUrl } from './utils/api';
-import { Scale, BookOpen, Menu, FileText } from 'lucide-react';
+import { Scale, BookOpen, Menu, FileText, UserCheck } from 'lucide-react';
 
 const getChatsStorageKey = (user) => {
   return user ? `lawlink_user_chats_${user.id}` : 'lawlink_guest_chats';
@@ -84,6 +85,7 @@ function App() {
   const [showAdmin, setShowAdmin] = useState(false);
   const [showArticles, setShowArticles] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showLawyerDirectory, setShowLawyerDirectory] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(true);
   const [showHistoryMobile, setShowHistoryMobile] = useState(false);
   const [showSourcesMobile, setShowSourcesMobile] = useState(false);
@@ -559,6 +561,10 @@ function App() {
                 <span>Desk ({activeSources.length})</span>
               </button>
             )}
+            <button className="btn-secondary" onClick={() => setShowLawyerDirectory(true)} style={{ backgroundColor: 'rgba(59, 130, 246, 0.15)', borderColor: 'var(--blue-accent)', color: '#fff', fontWeight: '600' }}>
+              <UserCheck size={16} />
+              <span>Find Lawyers</span>
+            </button>
             <button className="btn-secondary" onClick={() => setShowExplorer(true)}>
               <BookOpen size={16} />
               <span>Browse Laws</span>
@@ -580,7 +586,13 @@ function App() {
           onSendMessage={handleSendMessage}
           onClearChat={handleClearChat}
           isGenerating={isGenerating}
-          onSuggestionClick={handleSuggestionClick}
+          onSuggestionClick={(query) => {
+            if (query.toLowerCase().includes('find a verified lawyer')) {
+              setShowLawyerDirectory(true);
+            } else {
+              handleSendMessage(query);
+            }
+          }}
           currentUser={currentUser}
           onStartOnboarding={() => setShowOnboarding(true)}
         />
@@ -591,6 +603,17 @@ function App() {
           onClose={() => setShowOnboarding(false)}
           onSubmitIntake={(payload) => {
             handleSendMessage(payload.summaryPrompt);
+          }}
+        />
+      )}
+
+      {showLawyerDirectory && (
+        <LawyerDirectoryModal
+          onClose={() => setShowLawyerDirectory(false)}
+          onSelectAction={(action, lawyer) => {
+            if (action === 'chat' || action === 'book' || action === 'call') {
+              handleSendMessage(`[DIRECT ADVOCATE REQUEST]\nAction: ${action.toUpperCase()}\nCounsel: ${lawyer.name}\nSpecialization: ${lawyer.practiceArea}\nLocation: ${lawyer.city}, ${lawyer.state}\n\nPlease initiate consultation workspace and booking options.`);
+            }
           }}
         />
       )}
