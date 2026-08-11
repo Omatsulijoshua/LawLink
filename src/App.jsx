@@ -12,10 +12,13 @@ import { EmergencyHelpModal } from './components/EmergencyHelpModal';
 import { ConsultationBookingModal } from './components/ConsultationBookingModal';
 import { AppointmentsModal } from './components/AppointmentsModal';
 import { ClientLawyerWorkspaceModal } from './components/ClientLawyerWorkspaceModal';
+import { CasesModal } from './components/CasesModal';
+import { DocumentVaultModal } from './components/DocumentVaultModal';
+import { LegalDocGeneratorModal } from './components/LegalDocGeneratorModal';
 import { calculateLawyerMatches } from './utils/matchingEngine';
 import { INITIAL_LAWYERS } from './data/mockLawyers';
 import { fetchWithTimeout, getApiEndpoint, getApiUrl } from './utils/api';
-import { Scale, BookOpen, Menu, FileText, UserCheck, AlertTriangle, Calendar } from 'lucide-react';
+import { Scale, BookOpen, Menu, FileText, UserCheck, AlertTriangle, Calendar, Briefcase, Lock, FileSpreadsheet } from 'lucide-react';
 
 const getChatsStorageKey = (user) => {
   return user ? `lawlink_user_chats_${user.id}` : 'lawlink_guest_chats';
@@ -97,6 +100,9 @@ function App() {
   const [matchModalData, setMatchModalData] = useState(null);
   const [bookingLawyer, setBookingLawyer] = useState(null);
   const [showAppointments, setShowAppointments] = useState(false);
+  const [showCases, setShowCases] = useState(false);
+  const [showVault, setShowVault] = useState(false);
+  const [showDocGenerator, setShowDocGenerator] = useState(false);
   const [activeWorkspaceApt, setActiveWorkspaceApt] = useState(null);
   const [appointments, setAppointments] = useState(() => {
     const saved = localStorage.getItem('lawlink_appointments');
@@ -577,6 +583,18 @@ function App() {
                 <span>Desk ({activeSources.length})</span>
               </button>
             )}
+            <button className="btn-secondary" onClick={() => setShowCases(true)}>
+              <Briefcase size={16} />
+              <span>My Cases</span>
+            </button>
+            <button className="btn-secondary" onClick={() => setShowDocGenerator(true)} style={{ backgroundColor: 'rgba(212, 175, 55, 0.12)', borderColor: 'var(--gold-primary)', color: 'var(--gold-primary)', fontWeight: '600' }}>
+              <FileSpreadsheet size={16} />
+              <span>Draft Legal Instrument</span>
+            </button>
+            <button className="btn-secondary" onClick={() => setShowVault(true)}>
+              <Lock size={16} />
+              <span>Vault</span>
+            </button>
             <button className="btn-secondary" onClick={() => setShowAppointments(true)}>
               <Calendar size={16} />
               <span>Appointments ({appointments.length})</span>
@@ -613,6 +631,8 @@ function App() {
               setShowEmergencyHelp(true);
             } else if (query.toLowerCase().includes('appointments')) {
               setShowAppointments(true);
+            } else if (query.toLowerCase().includes('my cases')) {
+              setShowCases(true);
             } else {
               handleSendMessage(query);
             }
@@ -691,6 +711,27 @@ function App() {
           onOpenWorkspace={(apt) => {
             setActiveWorkspaceApt(apt);
           }}
+        />
+      )}
+
+      {showCases && (
+        <CasesModal
+          onClose={() => setShowCases(false)}
+          onOpenWorkspace={(apt) => {
+            setActiveWorkspaceApt(apt);
+          }}
+        />
+      )}
+
+      {showVault && (
+        <DocumentVaultModal
+          onClose={() => setShowVault(false)}
+        />
+      )}
+
+      {showDocGenerator && (
+        <LegalDocGeneratorModal
+          onClose={() => setShowDocGenerator(false)}
         />
       )}
 
