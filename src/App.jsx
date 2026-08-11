@@ -9,10 +9,13 @@ import { ClientOnboardingModal } from './components/ClientOnboardingModal';
 import { LawyerDirectoryModal } from './components/LawyerDirectoryModal';
 import { MatchResultsModal } from './components/MatchResultsModal';
 import { EmergencyHelpModal } from './components/EmergencyHelpModal';
+import { ConsultationBookingModal } from './components/ConsultationBookingModal';
+import { AppointmentsModal } from './components/AppointmentsModal';
+import { ClientLawyerWorkspaceModal } from './components/ClientLawyerWorkspaceModal';
 import { calculateLawyerMatches } from './utils/matchingEngine';
 import { INITIAL_LAWYERS } from './data/mockLawyers';
 import { fetchWithTimeout, getApiEndpoint, getApiUrl } from './utils/api';
-import { Scale, BookOpen, Menu, FileText, UserCheck, AlertTriangle } from 'lucide-react';
+import { Scale, BookOpen, Menu, FileText, UserCheck, AlertTriangle, Calendar } from 'lucide-react';
 
 const getChatsStorageKey = (user) => {
   return user ? `lawlink_user_chats_${user.id}` : 'lawlink_guest_chats';
@@ -92,6 +95,13 @@ function App() {
   const [showLawyerDirectory, setShowLawyerDirectory] = useState(false);
   const [showEmergencyHelp, setShowEmergencyHelp] = useState(false);
   const [matchModalData, setMatchModalData] = useState(null);
+  const [bookingLawyer, setBookingLawyer] = useState(null);
+  const [showAppointments, setShowAppointments] = useState(false);
+  const [activeWorkspaceApt, setActiveWorkspaceApt] = useState(null);
+  const [appointments, setAppointments] = useState(() => {
+    const saved = localStorage.getItem('lawlink_appointments');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [isSubscribed, setIsSubscribed] = useState(true);
   const [showHistoryMobile, setShowHistoryMobile] = useState(false);
   const [showSourcesMobile, setShowSourcesMobile] = useState(false);
@@ -567,6 +577,10 @@ function App() {
                 <span>Desk ({activeSources.length})</span>
               </button>
             )}
+            <button className="btn-secondary" onClick={() => setShowAppointments(true)}>
+              <Calendar size={16} />
+              <span>Appointments ({appointments.length})</span>
+            </button>
             <button className="btn-secondary" onClick={() => setShowLawyerDirectory(true)} style={{ backgroundColor: 'rgba(59, 130, 246, 0.15)', borderColor: 'var(--blue-accent)', color: '#fff', fontWeight: '600' }}>
               <UserCheck size={16} />
               <span>Find Lawyers</span>
@@ -597,6 +611,8 @@ function App() {
               setShowLawyerDirectory(true);
             } else if (query.toLowerCase().includes('emergency legal help')) {
               setShowEmergencyHelp(true);
+            } else if (query.toLowerCase().includes('appointments')) {
+              setShowAppointments(true);
             } else {
               handleSendMessage(query);
             }
@@ -623,7 +639,11 @@ function App() {
           matchedLawyers={matchModalData.matches}
           onClose={() => setMatchModalData(null)}
           onSelectAction={(action, lawyer) => {
-            handleSendMessage(`[DIRECT ADVOCATE REQUEST]\nAction: ${action.toUpperCase()}\nCounsel: ${lawyer.name}\nSpecialization: ${lawyer.practiceArea}\nLocation: ${lawyer.city}, ${lawyer.state}\nMatch Percentage: ${lawyer.matchPercentage}%\n\nPlease initiate consultation workspace and booking options.`);
+            if (action === 'book') {
+              setBookingLawyer(lawyer);
+            } else {
+              setActiveWorkspaceApt({ lawyerName: lawyer.name, lawyerTitle: lawyer.title, channel: 'Live Chat' });
+            }
           }}
         />
       )}
@@ -632,7 +652,7 @@ function App() {
         <EmergencyHelpModal
           onClose={() => setShowEmergencyHelp(false)}
           onSelectAction={(action, lawyer) => {
-            handleSendMessage(`[EMERGENCY ADVOCATE DISPATCH]\nAction: ${action.toUpperCase()}\nCounsel: ${lawyer.name}\nSpecialization: ${lawyer.practiceArea}\nLocation: ${lawyer.city}, ${lawyer.state}\nEmergency Status: ON-CALL / AVAILABLE NOW\n\nPlease initiate immediate emergency legal assistance.`);
+            setActiveWorkspaceApt({ lawyerName: lawyer.name, lawyerTitle: lawyer.title, channel: action === 'call' ? 'Phone Call' : 'Video Call' });
           }}
         />
       )}
@@ -641,10 +661,43 @@ function App() {
         <LawyerDirectoryModal
           onClose={() => setShowLawyerDirectory(false)}
           onSelectAction={(action, lawyer) => {
-            if (action === 'chat' || action === 'book' || action === 'call') {
-              handleSendMessage(`[DIRECT ADVOCATE REQUEST]\nAction: ${action.toUpperCase()}\nCounsel: ${lawyer.name}\nSpecialization: ${lawyer.practiceArea}\nLocation: ${lawyer.city}, ${lawyer.state}\n\nPlease initiate consultation workspace and booking options.`);
+            if (action === 'book') {
+              setBookingLawyer(lawyer);
+            } else {
+              setActiveWorkspaceApt({ lawyerName: lawyer.name, lawyerTitle: lawyer.title, channel: 'Live Chat' });
             }
           }}
+        />
+      )}
+
+      {bookingLawyer && (
+        <ConsultationBookingModal
+          lawyer={bookingLawyer}
+          onClose={() => setBookingLawyer(null)}
+          onBookingComplete={(newApt) => {
+            const updated = [newApt, ...appointments];
+            setAppointments(updated);
+            localStorage.setItem('lawlink_appointments', JSON.stringify(updated));
+            setBookingLawyer(null);
+            setShowAppointments(true);
+          }}
+        />
+      )}
+
+      {showAppointments && (
+        <AppointmentsModal
+          appointments={appointments}
+          onClose={() => setShowAppointments(false)}
+          onOpenWorkspace={(apt) => {
+            setActiveWorkspaceApt(apt);
+          }}
+        />
+      )}
+
+      {activeWorkspaceApt && (
+        <ClientLawyerWorkspaceModal
+          appointment={activeWorkspaceApt}
+          onClose={() => setActiveWorkspaceApt(null)}
         />
       )}
 
