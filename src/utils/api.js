@@ -1,4 +1,4 @@
-const DEFAULT_PRODUCTION_API_URL = 'https://midlex-ai-backend.onrender.com';
+const DEFAULT_PRODUCTION_API_URL = 'https://lawlink-ai-backend.onrender.com';
 
 export function getApiUrl() {
   const configuredUrl = (

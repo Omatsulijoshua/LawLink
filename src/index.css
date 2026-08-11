@@ -1,41 +1,45 @@
-/* Midlex AI Global CSS & Design System */
+/* LawLink AI Global CSS & Design System */
 
 :root {
   color-scheme: dark light;
 
-  /* Harmonious Color Palette */
-  --bg-primary: #0a0d0f;        /* Deep rich dark charcoal/slate */
-  --bg-secondary: #101518;      /* Slightly lighter panel background */
-  --bg-sidebar: #0d1215;        /* Subtle contrast for navigation */
+  /* LawLink Premium Legal Tech Color Palette */
+  --bg-primary: #0b0f19;        /* Deep obsidian midnight slate */
+  --bg-secondary: #111827;      /* Rich panel background */
+  --bg-sidebar: #0e1320;        /* Sleek sidebar navigation */
   
-  --green-primary: hsl(142, 50%, 16%);   /* Nigerian dark forest green */
-  --green-accent: hsl(142, 60%, 35%);    /* Bright national green accent */
-  --green-glow: rgba(22, 101, 52, 0.25);
+  --blue-primary: hsl(217, 91%, 48%);    /* Royal Legal Blue */
+  --blue-accent: hsl(217, 91%, 60%);     /* Electric Accent Blue */
+  --blue-glow: rgba(37, 99, 235, 0.28);
   
-  --gold-primary: hsl(43, 60%, 50%);     /* Premium Legal Gold/Bronze */
-  --gold-accent: hsl(43, 80%, 45%);      /* Darker bronze highlight */
-  --gold-glow: rgba(202, 138, 4, 0.15);
+  --green-primary: hsl(158, 64%, 22%);   /* Deep Forest Legal Green */
+  --green-accent: hsl(158, 64%, 38%);    /* Emerald Verified Accent */
+  --green-glow: rgba(16, 185, 129, 0.25);
   
-  --text-primary: #f3f4f6;       /* Soft white */
-  --text-secondary: #9ca3af;     /* Neutral grey */
-  --text-muted: #6b7280;         /* Darker grey */
+  --gold-primary: hsl(38, 92%, 50%);     /* Premium Legal Gold / Scale of Justice */
+  --gold-accent: hsl(38, 92%, 60%);      /* Bright Gold Highlight */
+  --gold-glow: rgba(217, 119, 6, 0.22);
   
-  --border-light: rgba(255, 255, 255, 0.06);
-  --border-glow: rgba(43, 200, 100, 0.15);
+  --text-primary: #f8fafc;       /* Ultra-clean slate white */
+  --text-secondary: #94a3b8;     /* Soft slate grey */
+  --text-muted: #64748b;         /* Muted slate grey */
+  
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(59, 130, 246, 0.2);
   
   /* Glassmorphism Details */
-  --glass-bg: rgba(16, 21, 24, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.05);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-  --glass-blur: blur(12px);
+  --glass-bg: rgba(17, 24, 39, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.6);
+  --glass-blur: blur(14px);
 
-  --topbar-bg: rgba(16, 21, 24, 0.7);
-  --panel-header-bg: rgba(10, 13, 15, 0.5);
-  --input-panel-bg: rgba(10, 13, 15, 0.98);
-  --mobile-hero-surface: rgba(16, 21, 24, 0.94);
-  --warning-bg: rgba(220, 38, 38, 0.12);
-  --warning-border: rgba(220, 38, 38, 0.25);
-  --warning-text: #f87171;
+  --topbar-bg: rgba(17, 24, 39, 0.78);
+  --panel-header-bg: rgba(11, 15, 25, 0.6);
+  --input-panel-bg: rgba(11, 15, 25, 0.98);
+  --mobile-hero-surface: rgba(17, 24, 39, 0.95);
+  --warning-bg: rgba(239, 68, 68, 0.12);
+  --warning-border: rgba(239, 68, 68, 0.25);
+  --warning-text: #fca5a5;
   
   /* Fonts */
   --font-serif: 'Playfair Display', Georgia, serif;
@@ -46,35 +50,39 @@
 
 @media (prefers-color-scheme: light) {
   :root {
-    --bg-primary: #f4f7f4;
+    --bg-primary: #f8fafc;
     --bg-secondary: #ffffff;
-    --bg-sidebar: #edf3ef;
+    --bg-sidebar: #f1f5f9;
 
-    --green-primary: hsl(148, 46%, 24%);
-    --green-accent: hsl(148, 58%, 30%);
-    --green-glow: rgba(22, 101, 52, 0.13);
+    --blue-primary: hsl(217, 91%, 38%);
+    --blue-accent: hsl(217, 91%, 48%);
+    --blue-glow: rgba(37, 99, 235, 0.14);
 
-    --gold-primary: hsl(41, 66%, 38%);
-    --gold-accent: hsl(41, 76%, 32%);
-    --gold-glow: rgba(161, 98, 7, 0.13);
+    --green-primary: hsl(158, 64%, 26%);
+    --green-accent: hsl(158, 64%, 32%);
+    --green-glow: rgba(16, 185, 129, 0.14);
 
-    --text-primary: #101817;
-    --text-secondary: #4b5b58;
-    --text-muted: #74827f;
+    --gold-primary: hsl(38, 92%, 40%);
+    --gold-accent: hsl(38, 92%, 46%);
+    --gold-glow: rgba(217, 119, 6, 0.14);
 
-    --border-light: rgba(18, 66, 45, 0.13);
-    --border-glow: rgba(22, 101, 52, 0.14);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
 
-    --glass-bg: rgba(255, 255, 255, 0.78);
-    --glass-border: rgba(18, 66, 45, 0.1);
+    --border-light: rgba(15, 23, 42, 0.12);
+    --border-glow: rgba(37, 99, 235, 0.15);
+
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(15, 23, 42, 0.08);
     --glass-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
 
-    --topbar-bg: rgba(255, 255, 255, 0.82);
-    --panel-header-bg: rgba(255, 255, 255, 0.72);
-    --input-panel-bg: rgba(244, 247, 244, 0.98);
-    --mobile-hero-surface: rgba(255, 255, 255, 0.88);
-    --warning-bg: rgba(185, 28, 28, 0.08);
-    --warning-border: rgba(185, 28, 28, 0.18);
+    --topbar-bg: rgba(255, 255, 255, 0.85);
+    --panel-header-bg: rgba(255, 255, 255, 0.75);
+    --input-panel-bg: rgba(248, 250, 252, 0.98);
+    --mobile-hero-surface: rgba(255, 255, 255, 0.9);
+    --warning-bg: rgba(220, 38, 38, 0.08);
+    --warning-border: rgba(220, 38, 38, 0.18);
     --warning-text: #9f1239;
   }
 }

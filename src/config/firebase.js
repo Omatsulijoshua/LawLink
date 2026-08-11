@@ -31,7 +31,7 @@ if (isConfigured) {
   }
 } else {
   console.warn('⚠️ Firebase credentials are not set in frontend .env.');
-  console.warn('⚠️ Midlex Auth will operate in Simulated Google Sign-In Mode.');
+  console.warn('⚠️ LawLink Auth will operate in Simulated Google Sign-In Mode.');
 }
 
 export { auth, googleProvider, isConfigured };

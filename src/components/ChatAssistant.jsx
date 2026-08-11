@@ -120,10 +120,13 @@ export function ChatAssistant({ messages, onSendMessage, onClearChat, isGenerati
             </div>
             
             <h1 className="welcome-title">
-              Midlex AI: <span>Nigerian Law Assistant</span>
+              LawLink AI: <span>Legal Intake & Intelligence</span>
             </h1>
+            <p style={{ color: 'var(--gold-primary)', fontWeight: '600', fontSize: '1rem', marginTop: '4px', marginBottom: '8px' }}>
+              "The right lawyer. Right when you need one."
+            </p>
             <p className="welcome-desc">
-              Ask legal questions regarding the Constitution of Nigeria, Land Use Act, road traffic rules, Matrimonial Causes Act, Electoral Act, and Criminal Codes. Receive instant citations and legal rationale in real time.
+              Describe your legal issue for AI matter classification, lawyer matching, statutory research, and instant legal guidance under the Nigerian Legal System.
             </p>
 
             <div className="suggestion-grid">
@@ -143,7 +146,7 @@ export function ChatAssistant({ messages, onSendMessage, onClearChat, isGenerati
           messages.map((msg, index) => (
             <div key={index} className={`message-bubble ${msg.role}`}>
               <div className={`avatar ${msg.role}`}>
-                {msg.role === 'user' ? (currentUser ? currentUser.avatar : 'U') : 'AI'}
+                {msg.role === 'user' ? (currentUser ? currentUser.avatar : 'U') : 'LL'}
               </div>
               <div className="message-content">
                 <div style={{ whiteSpace: 'pre-wrap' }}>
@@ -176,7 +179,7 @@ export function ChatAssistant({ messages, onSendMessage, onClearChat, isGenerati
 
         {isGenerating && (
           <div className="message-bubble assistant">
-            <div className="avatar assistant">AI</div>
+            <div className="avatar assistant">LL</div>
             <div className="message-content" style={{ display: 'flex', alignItems: 'center' }}>
               <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginRight: '10px' }}>{thinkingText}</span>
               <div className="typing-dots">
@@ -197,7 +200,7 @@ export function ChatAssistant({ messages, onSendMessage, onClearChat, isGenerati
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask about Nigerian law..."
+              placeholder="Describe your legal issue or ask a question..."
               disabled={isGenerating}
             />
             <div className="action-buttons">
@@ -230,8 +233,7 @@ export function ChatAssistant({ messages, onSendMessage, onClearChat, isGenerati
           marginTop: '10px',
           lineHeight: '1.4'
         }}>
-          Disclaimer: Midlex AI provides general information based on public codes and gazettes. It does not constitute formal legal counsel. <br />
-          If you need further legal assistance, please <a href="https://midlex-llp.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold-primary)', textDecoration: 'none', fontWeight: '500' }} onMouseOver={(e) => e.target.style.textDecoration = 'underline'} onMouseOut={(e) => e.target.style.textDecoration = 'none'}>click here to visit Midlex LLP</a>.
+          Disclaimer: LawLink AI provides general legal information and intake classification. It does not constitute formal legal representation.
         </div>
       </div>
     </div>

@@ -281,22 +281,20 @@ ${unverifiedAuthorities.map(item => `- ${item}`).join('\n')}
 Rewrite the answer now. Remove every unverified case example, reporter citation, locus classicus claim, public example, or external authority that is not present in the retrieved materials. Do not replace them with new examples. If no verified public example is available from the retrieved materials, say exactly: "No verified public example is available from the current retrieved sources." Keep the answer useful, practical, and end with **In conclusion:**.`;
 
   return generateGeminiAnswer(rewritePrompt);
-}
-
-function buildGeminiResearchBasis(question) {
+}function buildGeminiResearchBasis(question) {
   const source = {
     id: `gemini-research-${Date.now()}`,
     category: 'Research Basis',
     section: 'Gemini general legal knowledge',
     title: 'Gemini-generated legal research basis',
-    act: 'Midlex AI / Gemini',
+    act: 'LawLink AI / Gemini',
     chapter: 'No matched local source',
     part: 'General Nigerian-law response',
     sourcePage: 'No official page retrieved',
     sourceUrl: '',
     isGeneratedBasis: true,
-    content: 'No exact official source or verified public example was retrieved from the Midlex local law database for this question. This card is not an official citation; it explains that the answer was generated without attaching a verified public example.',
-    reasoning: `The question "${cleanString(question, 220)}" did not match a stored Midlex public-code source strongly enough, so Gemini answered from general Nigerian-law knowledge. Unverified case examples should not be used for this answer.`
+    content: 'No exact official source or verified public example was retrieved from the LawLink local law database for this question. This card is not an official citation; it explains that the answer was generated without attaching a verified public example.',
+    reasoning: `The question "${cleanString(question, 220)}" did not match a stored LawLink public-code source strongly enough, so Gemini answered from general Nigerian-law knowledge. Unverified case examples should not be used for this answer.`
   };
 
   return {
@@ -314,7 +312,7 @@ function buildPrompt(message, localMatch, history) {
   const conversationMemory = buildConversationMemory(message, history);
 
   if (!hasSources) {
-    return `You are Midlex AI, an elite Nigerian legal assistant like a careful legal researcher.
+    return `You are LawLink AI, an elite Nigerian legal assistant and legal intake classifier. Tagline: "The right lawyer. Right when you need one."
 The user may write with spelling mistakes, shorthand, Nigerian English, or informal wording.
 
 User's question:
@@ -322,7 +320,7 @@ User's question:
 
 ${conversationMemory}
 
-Answer intelligently using your knowledge of Nigerian law. If the question concerns Nigerian law, explain the likely legal position, practical steps, and risks. If a legal point depends on state law, customary law, court documents, or facts not provided, say so clearly and ask for the missing fact naturally.
+Answer intelligently using your knowledge of Nigerian law. If the question concerns Nigerian law, explain the likely legal position, practical steps, risks, and recommend the suitable legal specialization if they need a lawyer. If a legal point depends on state law, customary law, court documents, or facts not provided, say so clearly and ask for the missing fact naturally.
 
 ${jurisdictionRule}
 
@@ -339,13 +337,14 @@ ${verifiedExamplesRule}
 8. Always end with a short final summary headed exactly **In conclusion:** that directly answers the question.`;
   }
 
-  return `You are Midlex AI, an elite Nigerian legal assistant like a careful legal researcher.
+  return `You are LawLink AI, an elite Nigerian legal assistant and legal intake classifier. Tagline: "The right lawyer. Right when you need one."
 The user may write with spelling mistakes, shorthand, Nigerian English, or informal wording.
 Use the retrieved Nigerian legal materials below as your grounding, then apply general Nigerian legal knowledge where helpful.
 
 Retrieved Nigerian legal materials:
 ===
 ${buildContext(localMatch.sources)}
+===`;
 ===
 
 User's question:

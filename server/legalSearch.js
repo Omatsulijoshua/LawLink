@@ -203,7 +203,7 @@ export function searchLegalDatabase(query) {
     const lowerQuery = query.toLowerCase().trim();
     if (lowerQuery === 'hello' || lowerQuery === 'hi') {
       return {
-        answerText: "Hello! I am Midlex AI, your assistant for the Nigerian Legal System. You can ask me questions about the 1999 Constitution (Fundamental Rights), the Land Use Act, the Criminal Code Act, or the Electoral Act 2022. What would you like to know today?",
+        answerText: "Hello! I am LawLink AI, your legal intake and intelligence assistant for the Nigerian Legal System. You can ask me questions about fundamental rights, land rights, corporate law, or describe your legal issue to find a suitable lawyer. What would you like help with today?",
         sources: [],
         reasoning: []
       };

@@ -393,7 +393,7 @@ loadAnalytics();
 
 // Health Check Route for Render
 app.get('/', (req, res) => {
-  res.send('Midlex AI Backend API is running successfully.');
+  res.send('LawLink AI Backend API is running successfully.');
 });
 
 // Initialize Google Gemini API
@@ -685,14 +685,14 @@ function buildGeminiResearchBasis(question) {
     category: 'Research Basis',
     section: 'Gemini general legal knowledge',
     title: 'Gemini-generated legal research basis',
-    act: 'Midlex AI / Gemini',
+    act: 'LawLink AI / Gemini',
     chapter: 'No matched local source',
     part: 'General Nigerian-law response',
     sourcePage: 'No official page retrieved',
     sourceUrl: '',
     isGeneratedBasis: true,
-    content: 'No exact official source or verified public example was retrieved from the Midlex local law database for this question. This card is not an official citation; it explains that the answer was generated without attaching a verified public example.',
-    reasoning: `The question "${cleanString(question, 220)}" did not match a stored Midlex public-code source strongly enough, so Gemini answered from general Nigerian-law knowledge. Unverified case examples should not be used for this answer.`
+    content: 'No exact official source or verified public example was retrieved from the LawLink local law database for this question. This card is not an official citation; it explains that the answer was generated without attaching a verified public example.',
+    reasoning: `The question "${cleanString(question, 220)}" did not match a stored LawLink public-code source strongly enough, so Gemini answered from general Nigerian-law knowledge. Unverified case examples should not be used for this answer.`
   };
 
   return {
@@ -775,7 +775,7 @@ app.get('/api/articles', (req, res) => {
 app.post('/api/admin/publish-article', (req, res) => {
   const { email, password, title, subtitle, thumbnail, content, audience } = req.body;
 
-  if (email === 'midlexllp01@gmail.com' && password === 'Admin@123') {
+  if (email === 'lawlinkllp01@gmail.com' && password === 'Admin@123') {
     if (!title || !content) {
       return res.status(400).json({ error: 'Title and Content are required.' });
     }
@@ -814,7 +814,7 @@ app.post('/api/admin/publish-article', (req, res) => {
     console.log(`✉️ Dispatching to ${uniqueRecipients.length} client email(s)...`);
     
     uniqueRecipients.forEach(emailAddr => {
-      console.log(`   👉 [DISPATCHED] To: ${emailAddr} | Subject: [Midlex LLP] ${title}`);
+      console.log(`   👉 [DISPATCHED] To: ${emailAddr} | Subject: [LawLink] ${title}`);
     });
     console.log(`📧 ===== EMAIL DISPATCH SIMULATION COMPLETE =====\n`);
 
@@ -832,7 +832,7 @@ app.post('/api/admin/publish-article', (req, res) => {
 app.post('/api/admin/login', (req, res) => {
   const { email, password } = req.body;
 
-  if (email === 'midlexllp01@gmail.com' && password === 'Admin@123') {
+  if (email === 'lawlinkllp01@gmail.com' && password === 'Admin@123') {
     const now = Date.now();
     const oneDay = 24 * 60 * 60 * 1000;
 
@@ -948,7 +948,7 @@ app.post('/api/chat', async (req, res) => {
     if (genAI) {
       try {
         console.log('🤖 Querying Gemini for direct general greeting/helper reply...');
-        const systemPrompt = `You are Midlex AI, an elite legal assistant specialized in the Nigerian Legal System.
+        const systemPrompt = `You are LawLink AI, an elite legal assistant and legal intake classifier for LawLink ("The right lawyer. Right when you need one.").
 The user sent a message or asked a question: "${cleanMessage}".
 
 ${conversationMemory}
@@ -1007,7 +1007,7 @@ Standard Rationale: ${s.reasoning || ""}
 Reference: ${s.sourcePage || "Registry source"}${s.sourceUrl ? ` - ${s.sourceUrl}` : ""}`;
       }).join('\n\n');
 
-      const systemPrompt = `You are Midlex AI, an elite legal assistant specialized in the Nigerian Legal System.
+      const systemPrompt = `You are LawLink AI, an elite legal assistant and legal intake classifier for LawLink ("The right lawyer. Right when you need one.").
 Your job is to explain the law to the user in a professional, clear, and objective tone.
 You must ground your explanation primarily in the provided Nigerian legal sections below.
 
@@ -1065,6 +1065,6 @@ ${jurisdictionRule}
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`🚀 Midlex AI Backend Server running at http://localhost:${PORT}`);
+  console.log(`🚀 LawLink AI Backend Server running at http://localhost:${PORT}`);
   console.log(`👉 API Endpoint: http://localhost:${PORT}/api/chat`);
 });

@@ -134,17 +134,17 @@ export function SavedChatsPanel({
             />
           </label>
           <span style={{ fontSize: '0.64rem', color: 'var(--text-muted)', lineHeight: '1.3' }}>
-            Receive publications and guides from Midlex LLP directly to your email.
+            Receive legal publications and updates from LawLink directly to your email.
           </span>
         </div>
       )}
 
       {/* Footer Branding */}
       <div className="sources-footer" style={{ flexDirection: 'column', gap: '14px', padding: '24px 20px' }}>
-        <a href="https://midlex-llp.vercel.app/" target="_blank" rel="noopener noreferrer" className="footer-link">
-          <img src="/midlex_logo.png" alt="Midlex Logo" className="footer-logo" />
-          <span>Powered by Midlex LLP</span>
-        </a>
+        <div className="footer-link">
+          <img src="/lawlink_logo.png" alt="LawLink Logo" className="footer-logo" style={{ borderRadius: '4px', objectFit: 'contain' }} />
+          <span>Powered by LawLink AI</span>
+        </div>
         
         <button 
           className="admin-link-btn" 

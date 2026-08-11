@@ -30,7 +30,7 @@ export function AuthManager({ onUserChange, currentUser }) {
       return () => unsubscribe();
     } else {
       // Local Mock Session observer fallback
-      const savedUser = localStorage.getItem('midlex_user');
+      const savedUser = localStorage.getItem('lawlink_user');
       if (savedUser) {
         onUserChange(JSON.parse(savedUser));
       }
@@ -61,7 +61,7 @@ export function AuthManager({ onUserChange, currentUser }) {
           avatar: 'NB',
           provider: 'google'
         };
-        localStorage.setItem('midlex_user', JSON.stringify(mockUser));
+        localStorage.setItem('lawlink_user', JSON.stringify(mockUser));
         onUserChange(mockUser);
         setIsSigningIn(false);
         setShowModal(false);
@@ -78,7 +78,7 @@ export function AuthManager({ onUserChange, currentUser }) {
       }
     } else {
       // Mock Sign-Out
-      localStorage.removeItem('midlex_user');
+      localStorage.removeItem('lawlink_user');
       onUserChange(null);
     }
   };
@@ -125,7 +125,7 @@ export function AuthManager({ onUserChange, currentUser }) {
               <ShieldCheck size={48} />
             </div>
             <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', marginBottom: '12px' }}>
-              Access Midlex AI
+              Access LawLink AI
             </h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
               Sign in to retain your search history, bookmark constitutional clauses, and sync chats across sessions.

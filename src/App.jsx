@@ -10,11 +10,11 @@ import { fetchWithTimeout, getApiEndpoint, getApiUrl } from './utils/api';
 import { Scale, BookOpen, Menu, FileText } from 'lucide-react';
 
 const getChatsStorageKey = (user) => {
-  return user ? `midlex_user_chats_${user.id}` : 'midlex_guest_chats';
+  return user ? `lawlink_user_chats_${user.id}` : 'lawlink_guest_chats';
 };
 
 const getAnalyticsSessionId = () => {
-  const key = 'midlex_analytics_session_id';
+  const key = 'lawlink_analytics_session_id';
   let sessionId = sessionStorage.getItem(key);
 
   if (!sessionId) {
@@ -42,7 +42,7 @@ const buildFrontendResearchBasis = (query) => {
     category: 'Research Basis',
     section: 'No verified source attached',
     title: 'Answer generated without a returned citation',
-    act: 'Midlex AI / Gemini',
+    act: 'LawLink AI / Gemini',
     chapter: 'No matched local source',
     part: 'General Nigerian-law response',
     sourcePage: 'No official page retrieved',
@@ -76,7 +76,7 @@ function App() {
 
   // Bookmarks state
   const [bookmarks, setBookmarks] = useState(() => {
-    const savedBookmarks = localStorage.getItem('midlex_bookmarks');
+    const savedBookmarks = localStorage.getItem('lawlink_bookmarks');
     return savedBookmarks ? JSON.parse(savedBookmarks) : [];
   });
   const [isGenerating, setIsGenerating] = useState(false);
@@ -109,12 +109,12 @@ function App() {
   // Track page visits on mount
   useEffect(() => {
     const trackVisit = async () => {
-      const isTracked = sessionStorage.getItem('midlex_session_tracked');
+      const isTracked = sessionStorage.getItem('lawlink_session_tracked');
       if (!isTracked) {
         try {
           const API_URL = getApiUrl();
           if (!API_URL) {
-            sessionStorage.setItem('midlex_session_tracked', 'true');
+            sessionStorage.setItem('lawlink_session_tracked', 'true');
             return;
           }
           await fetchWithTimeout(`${API_URL}/api/analytics/visit`, {
@@ -124,7 +124,7 @@ function App() {
               sessionId: getAnalyticsSessionId()
             })
           }, 6000);
-          sessionStorage.setItem('midlex_session_tracked', 'true');
+          sessionStorage.setItem('lawlink_session_tracked', 'true');
         } catch (err) {
           console.warn('Analytics backend unreachable for visit logging:', err.message);
         }
@@ -143,7 +143,7 @@ function App() {
       updatedBookmarks = [...bookmarks, source];
     }
     setBookmarks(updatedBookmarks);
-    localStorage.setItem('midlex_bookmarks', JSON.stringify(updatedBookmarks));
+    localStorage.setItem('lawlink_bookmarks', JSON.stringify(updatedBookmarks));
   };
 
   // Sync newsletter subscription status to backend
@@ -280,7 +280,7 @@ function App() {
       loadedChats = JSON.parse(savedChats);
     } else if (user) {
       // Data Migration check: see if they have old single-chat data we can import
-      const oldSingleChat = localStorage.getItem(`midlex_chats_${user.id}`);
+      const oldSingleChat = localStorage.getItem(`lawlink_chats_${user.id}`);
       if (oldSingleChat) {
         try {
           const parsedMsgs = JSON.parse(oldSingleChat);
@@ -297,7 +297,7 @@ function App() {
             };
             loadedChats = [migratedChat];
             localStorage.setItem(key, JSON.stringify(loadedChats));
-            localStorage.removeItem(`midlex_chats_${user.id}`); // Clean up old single chat key
+            localStorage.removeItem(`lawlink_chats_${user.id}`); // Clean up old single chat key
           }
         } catch (err) {
           console.error('Failed to migrate old single-chat data:', err);
@@ -347,7 +347,7 @@ function App() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Gemini API server returned an error.');
+        throw new Error(errorData.error || 'LawLink AI backend server returned an error.');
       }
 
       const data = await response.json();
@@ -382,14 +382,14 @@ function App() {
       // Save to chat list
       updateChatsList(activeChatId, finalMessages, newSources, newReasoning, text);
     } catch (err) {
-      console.warn('Gemini API unavailable:', err.message);
+      console.warn('LawLink AI service unavailable:', err.message);
       const elapsed = Date.now() - startTime;
       const remainingTime = Math.max(0, 3000 - elapsed);
 
       setTimeout(() => {
         const assistantMessage = { 
           role: 'assistant', 
-          content: `**AI service unavailable:** ${err.message}\n\nPlease try again shortly. If this continues, contact Midlex support.`,
+          content: `**AI service unavailable:** ${err.message}\n\nPlease try again shortly. If this continues, contact LawLink support.`,
           query: text
         };
         
@@ -535,8 +535,8 @@ function App() {
             >
               <Menu size={20} />
             </button>
-            <Scale size={24} style={{ color: 'var(--green-accent)' }} />
-            <h1 className="brand-name">Midlex <span>AI</span></h1>
+            <img src="/lawlink_logo.png" alt="LawLink Logo" style={{ height: '32px', width: '32px', borderRadius: '6px', objectFit: 'contain' }} />
+            <h1 className="brand-name">LawLink <span>AI</span></h1>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>

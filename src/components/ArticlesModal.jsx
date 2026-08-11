@@ -144,7 +144,7 @@ export function ArticlesModal({ onClose }) {
                 <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem' }}>Legal Updates &amp; Insights</h3>
               </div>
               <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                Browse articles and guidelines curated by Midlex LLP advocates regarding the Nigerian Legal System.
+                Browse articles and guidelines curated by LawLink verified advocates regarding the Nigerian Legal System.
               </p>
             </header>
 

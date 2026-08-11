@@ -4,7 +4,7 @@ import { fetchWithTimeout, getApiUrl } from '../utils/api';
 
 export function AdminDashboardModal({ onClose }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return sessionStorage.getItem('midlex_admin_session') === 'authenticated';
+    return sessionStorage.getItem('lawlink_admin_session') === 'authenticated';
   });
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -45,7 +45,7 @@ export function AdminDashboardModal({ onClose }) {
       const response = await fetchWithTimeout(`${API_URL}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'midlexllp01@gmail.com', password: 'Admin@123' })
+        body: JSON.stringify({ email: 'lawlinkllp01@gmail.com', password: 'Admin@123' })
       }, 10000);
 
       if (!response.ok) {
@@ -91,7 +91,7 @@ export function AdminDashboardModal({ onClose }) {
       const data = await response.json();
       setStats(data.stats);
       setIsAuthenticated(true);
-      sessionStorage.setItem('midlex_admin_session', 'authenticated');
+      sessionStorage.setItem('lawlink_admin_session', 'authenticated');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -120,7 +120,7 @@ export function AdminDashboardModal({ onClose }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: 'midlexllp01@gmail.com',
+          email: 'lawlinkllp01@gmail.com',
           password: 'Admin@123',
           title: newsTitle,
           subtitle: newsSubtitle,
@@ -155,7 +155,7 @@ export function AdminDashboardModal({ onClose }) {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem('midlex_admin_session');
+    sessionStorage.removeItem('lawlink_admin_session');
     setIsAuthenticated(false);
     setStats(null);
     setEmail('');
@@ -197,10 +197,10 @@ export function AdminDashboardModal({ onClose }) {
               <ShieldCheck size={40} style={{ color: 'var(--gold-primary)' }} />
             </div>
             <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', textTransform: 'capitalize', textAlign: 'center', marginBottom: '8px' }}>
-              Midlex Admin Desk
+              LawLink Admin Desk
             </h3>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '20px' }}>
-              Enter your law firm administrator credentials to unlock visitor statistics.
+              Enter your platform administrator credentials to unlock visitor statistics.
             </p>
 
             {error && (
@@ -225,7 +225,7 @@ export function AdminDashboardModal({ onClose }) {
                   type="email" 
                   className="chat-input"
                   style={{ borderRadius: '6px', height: '38px', padding: '0 12px', fontSize: '0.85rem' }}
-                  placeholder="midlexllp01@gmail.com"
+                  placeholder="lawlinkllp01@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isSubmitting}
