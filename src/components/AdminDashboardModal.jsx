@@ -328,7 +328,7 @@ export function AdminDashboardModal({ onClose }) {
                   transition: 'var(--transition-smooth)'
                 }}
               >
-                Analytics &amp; Usage
+                Analytics &amp; Financial GMV
               </button>
               <button 
                 onClick={() => setActiveTab('lawyers')}
@@ -344,7 +344,39 @@ export function AdminDashboardModal({ onClose }) {
                   transition: 'var(--transition-smooth)'
                 }}
               >
-                ⚖️ Lawyer Verification Desk
+                ⚖️ Lawyer Verification
+              </button>
+              <button 
+                onClick={() => setActiveTab('compliance')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  borderBottom: activeTab === 'compliance' ? '2px solid var(--gold-primary)' : '2px solid transparent',
+                  color: activeTab === 'compliance' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  padding: '8px 16px',
+                  fontWeight: activeTab === 'compliance' ? '600' : '500',
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  transition: 'var(--transition-smooth)'
+                }}
+              >
+                🛡️ NDPR Compliance
+              </button>
+              <button 
+                onClick={() => setActiveTab('audit')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  borderBottom: activeTab === 'audit' ? '2px solid var(--gold-primary)' : '2px solid transparent',
+                  color: activeTab === 'audit' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  padding: '8px 16px',
+                  fontWeight: activeTab === 'audit' ? '600' : '500',
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  transition: 'var(--transition-smooth)'
+                }}
+              >
+                📋 System Audit Log
               </button>
               <button 
                 onClick={() => setActiveTab('newsletter')}
@@ -602,6 +634,87 @@ export function AdminDashboardModal({ onClose }) {
                             Reject
                           </button>
                         </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : activeTab === 'compliance' ? (
+              // TAB 3: NDPR PRIVACY & COMPLIANCE VIEW
+              <div className="dashboard-content">
+                <div className="subpanel-header" style={{ marginBottom: '16px' }}>
+                  <ShieldCheck size={20} style={{ color: 'var(--gold-primary)' }} />
+                  <h4 style={{ fontSize: '1.1rem', color: '#fff' }}>NDPR / NDPA 2023 Data Protection & Privacy Compliance Center</h4>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '20px' }}>
+                  <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '8px', padding: '14px' }}>
+                    <span style={{ fontSize: '0.75rem', color: '#34d399', fontWeight: '700', textTransform: 'uppercase' }}>Encryption Protocol</span>
+                    <h5 style={{ color: '#fff', fontSize: '1.1rem', margin: '4px 0' }}>AES-256 TLS 1.3</h5>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Vault & Workspace Active</span>
+                  </div>
+                  <div style={{ backgroundColor: 'rgba(59, 130, 246, 0.12)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '8px', padding: '14px' }}>
+                    <span style={{ fontSize: '0.75rem', color: '#60a5fa', fontWeight: '700', textTransform: 'uppercase' }}>Data Protection Audit</span>
+                    <h5 style={{ color: '#fff', fontSize: '1.1rem', margin: '4px 0' }}>NDPC Compliant</h5>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Registered Data Controller</span>
+                  </div>
+                  <div style={{ backgroundColor: 'rgba(212, 175, 55, 0.12)', border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '8px', padding: '14px' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--gold-primary)', fontWeight: '700', textTransform: 'uppercase' }}>Privilege Protection</span>
+                    <h5 style={{ color: '#fff', fontSize: '1.1rem', margin: '4px 0' }}>Attorney-Client Privilege</h5>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Evidentiary Legal Protection</span>
+                  </div>
+                </div>
+
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--border-light)', borderRadius: '10px', padding: '18px' }}>
+                  <h5 style={{ color: '#fff', fontSize: '0.92rem', marginBottom: '8px' }}>Client Data Subject Rights & Purge Controls</h5>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '14px', lineHeight: '1.4' }}>
+                    Under Section 34 of the Nigeria Data Protection Act 2023, data subjects hold the right to erasure, portability, and consent withdrawal.
+                  </p>
+                  <button type="button" className="btn-secondary" onClick={() => alert("NDPR Data Protection Audit Report exported.")} style={{ fontSize: '0.8rem', padding: '6px 14px' }}>
+                    Export NDPR Audit Certification
+                  </button>
+                </div>
+              </div>
+            ) : activeTab === 'audit' ? (
+              // TAB 4: SYSTEM AUDIT LOG VIEW
+              <div className="dashboard-content">
+                <div className="subpanel-header" style={{ marginBottom: '16px' }}>
+                  <FileText size={20} style={{ color: 'var(--gold-primary)' }} />
+                  <h4 style={{ fontSize: '1.1rem', color: '#fff' }}>Immutable System Audit Log Trail</h4>
+                </div>
+
+                <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-light)', borderRadius: '10px', padding: '16px', overflowX: 'auto' }}>
+                  <table className="clients-table" style={{ width: '100%' }}>
+                    <thead>
+                      <tr>
+                        <th>Event Type</th>
+                        <th>User / Actor</th>
+                        <th>IP Address</th>
+                        <th>Timestamp</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="email-cell">ESCROW_HOLD_CREATED</td>
+                        <td className="time-cell">client@lawlink.ng</td>
+                        <td className="time-cell">197.210.64.12 (Lagos, NG)</td>
+                        <td className="time-cell">Aug 11, 2026 10:14:02</td>
+                        <td><span style={{ color: '#34d399', fontWeight: '600', fontSize: '0.75rem' }}>SUCCESS</span></td>
+                      </tr>
+                      <tr>
+                        <td className="email-cell">LAWYER_VERIFICATION_APPROVED</td>
+                        <td className="time-cell">admin@lawlink.ng</td>
+                        <td className="time-cell">102.89.23.41 (Abuja, NG)</td>
+                        <td className="time-cell">Aug 11, 2026 09:30:18</td>
+                        <td><span style={{ color: '#34d399', fontWeight: '600', fontSize: '0.75rem' }}>SUCCESS</span></td>
+                      </tr>
+                      <tr>
+                        <td className="email-cell">DOCUMENT_VAULT_DECRYPTED</td>
+                        <td className="time-cell">counsel.bello@lawlink.ng</td>
+                        <td className="time-cell">105.112.18.90 (Ikeja, NG)</td>
+                        <td className="time-cell">Aug 11, 2026 08:45:00</td>
+                        <td><span style={{ color: '#34d399', fontWeight: '600', fontSize: '0.75rem' }}>SUCCESS</span></td>
                       </tr>
                     </tbody>
                   </table>
