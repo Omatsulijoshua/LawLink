@@ -15,10 +15,13 @@ import { ClientLawyerWorkspaceModal } from './components/ClientLawyerWorkspaceMo
 import { CasesModal } from './components/CasesModal';
 import { DocumentVaultModal } from './components/DocumentVaultModal';
 import { LegalDocGeneratorModal } from './components/LegalDocGeneratorModal';
+import { NotificationsModal } from './components/NotificationsModal';
+import { LawFirmDashboardModal } from './components/LawFirmDashboardModal';
+import { CorporateRetainerModal } from './components/CorporateRetainerModal';
 import { calculateLawyerMatches } from './utils/matchingEngine';
 import { INITIAL_LAWYERS } from './data/mockLawyers';
 import { fetchWithTimeout, getApiEndpoint, getApiUrl } from './utils/api';
-import { Scale, BookOpen, Menu, FileText, UserCheck, AlertTriangle, Calendar, Briefcase, Lock, FileSpreadsheet } from 'lucide-react';
+import { Scale, BookOpen, Menu, FileText, UserCheck, AlertTriangle, Calendar, Briefcase, Lock, FileSpreadsheet, Bell, Building2, Crown } from 'lucide-react';
 
 const getChatsStorageKey = (user) => {
   return user ? `lawlink_user_chats_${user.id}` : 'lawlink_guest_chats';
@@ -103,6 +106,9 @@ function App() {
   const [showCases, setShowCases] = useState(false);
   const [showVault, setShowVault] = useState(false);
   const [showDocGenerator, setShowDocGenerator] = useState(false);
+  const [showNotifs, setShowNotifs] = useState(false);
+  const [showFirmDesk, setShowFirmDesk] = useState(false);
+  const [showCorporate, setShowCorporate] = useState(false);
   const [activeWorkspaceApt, setActiveWorkspaceApt] = useState(null);
   const [appointments, setAppointments] = useState(() => {
     const saved = localStorage.getItem('lawlink_appointments');
@@ -583,13 +589,24 @@ function App() {
                 <span>Desk ({activeSources.length})</span>
               </button>
             )}
+            <button className="btn-secondary" onClick={() => setShowNotifs(true)} title="In-App Notifications">
+              <Bell size={16} />
+            </button>
+            <button className="btn-secondary" onClick={() => setShowCorporate(true)} style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', borderColor: 'var(--gold-primary)', color: 'var(--gold-primary)', fontWeight: '600' }}>
+              <Crown size={16} />
+              <span>Corporate Retainers</span>
+            </button>
+            <button className="btn-secondary" onClick={() => setShowFirmDesk(true)}>
+              <Building2 size={16} />
+              <span>Firm Desk</span>
+            </button>
             <button className="btn-secondary" onClick={() => setShowCases(true)}>
               <Briefcase size={16} />
               <span>My Cases</span>
             </button>
             <button className="btn-secondary" onClick={() => setShowDocGenerator(true)} style={{ backgroundColor: 'rgba(212, 175, 55, 0.12)', borderColor: 'var(--gold-primary)', color: 'var(--gold-primary)', fontWeight: '600' }}>
               <FileSpreadsheet size={16} />
-              <span>Draft Legal Instrument</span>
+              <span>Draft Instrument</span>
             </button>
             <button className="btn-secondary" onClick={() => setShowVault(true)}>
               <Lock size={16} />
@@ -732,6 +749,27 @@ function App() {
       {showDocGenerator && (
         <LegalDocGeneratorModal
           onClose={() => setShowDocGenerator(false)}
+        />
+      )}
+
+      {showNotifs && (
+        <NotificationsModal
+          onClose={() => setShowNotifs(false)}
+        />
+      )}
+
+      {showFirmDesk && (
+        <LawFirmDashboardModal
+          onClose={() => setShowFirmDesk(false)}
+        />
+      )}
+
+      {showCorporate && (
+        <CorporateRetainerModal
+          onClose={() => setShowCorporate(false)}
+          onSelectPlan={(plan) => {
+            handleSendMessage(`[CORPORATE RETAINER SUBSCRIPTION REQUEST]\nPlan: ${plan.name}\nMonthly Fee: ₦${plan.fee.toLocaleString()} NGN\n\nPlease initialize corporate legal onboarding and dedicated Senior Advocate counsel assignment.`);
+          }}
         />
       )}
 
