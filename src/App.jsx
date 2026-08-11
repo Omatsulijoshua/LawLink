@@ -7,8 +7,12 @@ import { RightPanel } from './components/RightPanel';
 import { AdminDashboardModal } from './components/AdminDashboardModal';
 import { ClientOnboardingModal } from './components/ClientOnboardingModal';
 import { LawyerDirectoryModal } from './components/LawyerDirectoryModal';
+import { MatchResultsModal } from './components/MatchResultsModal';
+import { EmergencyHelpModal } from './components/EmergencyHelpModal';
+import { calculateLawyerMatches } from './utils/matchingEngine';
+import { INITIAL_LAWYERS } from './data/mockLawyers';
 import { fetchWithTimeout, getApiEndpoint, getApiUrl } from './utils/api';
-import { Scale, BookOpen, Menu, FileText, UserCheck } from 'lucide-react';
+import { Scale, BookOpen, Menu, FileText, UserCheck, AlertTriangle } from 'lucide-react';
 
 const getChatsStorageKey = (user) => {
   return user ? `lawlink_user_chats_${user.id}` : 'lawlink_guest_chats';
@@ -86,6 +90,8 @@ function App() {
   const [showArticles, setShowArticles] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showLawyerDirectory, setShowLawyerDirectory] = useState(false);
+  const [showEmergencyHelp, setShowEmergencyHelp] = useState(false);
+  const [matchModalData, setMatchModalData] = useState(null);
   const [isSubscribed, setIsSubscribed] = useState(true);
   const [showHistoryMobile, setShowHistoryMobile] = useState(false);
   const [showSourcesMobile, setShowSourcesMobile] = useState(false);
@@ -589,6 +595,8 @@ function App() {
           onSuggestionClick={(query) => {
             if (query.toLowerCase().includes('find a verified lawyer')) {
               setShowLawyerDirectory(true);
+            } else if (query.toLowerCase().includes('emergency legal help')) {
+              setShowEmergencyHelp(true);
             } else {
               handleSendMessage(query);
             }
@@ -602,7 +610,29 @@ function App() {
         <ClientOnboardingModal
           onClose={() => setShowOnboarding(false)}
           onSubmitIntake={(payload) => {
+            const matches = calculateLawyerMatches(payload, INITIAL_LAWYERS);
+            setMatchModalData({ payload, matches });
             handleSendMessage(payload.summaryPrompt);
+          }}
+        />
+      )}
+
+      {matchModalData && (
+        <MatchResultsModal
+          intakePayload={matchModalData.payload}
+          matchedLawyers={matchModalData.matches}
+          onClose={() => setMatchModalData(null)}
+          onSelectAction={(action, lawyer) => {
+            handleSendMessage(`[DIRECT ADVOCATE REQUEST]\nAction: ${action.toUpperCase()}\nCounsel: ${lawyer.name}\nSpecialization: ${lawyer.practiceArea}\nLocation: ${lawyer.city}, ${lawyer.state}\nMatch Percentage: ${lawyer.matchPercentage}%\n\nPlease initiate consultation workspace and booking options.`);
+          }}
+        />
+      )}
+
+      {showEmergencyHelp && (
+        <EmergencyHelpModal
+          onClose={() => setShowEmergencyHelp(false)}
+          onSelectAction={(action, lawyer) => {
+            handleSendMessage(`[EMERGENCY ADVOCATE DISPATCH]\nAction: ${action.toUpperCase()}\nCounsel: ${lawyer.name}\nSpecialization: ${lawyer.practiceArea}\nLocation: ${lawyer.city}, ${lawyer.state}\nEmergency Status: ON-CALL / AVAILABLE NOW\n\nPlease initiate immediate emergency legal assistance.`);
           }}
         />
       )}
