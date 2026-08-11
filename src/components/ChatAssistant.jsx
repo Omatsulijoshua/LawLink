@@ -1,102 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Trash2 } from 'lucide-react';
 
-export function ChatAssistant({ messages, onSendMessage, onClearChat, isGenerating, onSuggestionClick, currentUser }) {
+export function ChatAssistant({ messages, onSendMessage, onClearChat, isGenerating, onSuggestionClick, currentUser, onStartOnboarding }) {
   const [input, setInput] = useState('');
   const [thinkingText, setThinkingText] = useState('Searching legal database...');
   const chatContainerRef = useRef(null);
 
-  useEffect(() => {
-    if (!isGenerating) {
-      const timer = setTimeout(() => {
-        setThinkingText('Searching legal database...');
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-
-    const phases = [
-      'Searching legal database...',
-      'Analyzing relevant statutory provisions...',
-      'Synthesizing counsel rationale...',
-      'Drafting final response...'
-    ];
-
-    let currentPhase = 0;
-    const initialTimer = setTimeout(() => {
-      setThinkingText(phases[0]);
-    }, 0);
-
-    const interval = setInterval(() => {
-      currentPhase++;
-      if (currentPhase < phases.length) {
-        setThinkingText(phases[currentPhase]);
-      } else {
-        clearInterval(interval);
-      }
-    }, 850);
-
-    return () => {
-      clearTimeout(initialTimer);
-      clearInterval(interval);
-    };
-  }, [isGenerating]);
-
-  const suggestions = [
-    {
-      headline: "Fundamental Rights",
-      body: "What are my rights if arrested by the police?",
-      query: "what are my fundamental rights under police arrest?"
-    },
-    {
-      headline: "Land & Property",
-      body: "Can the Governor revoke my Certificate of Occupancy?",
-      query: "can the governor revoke my C of O land ownership?"
-    },
-    {
-      headline: "Criminal Penalties",
-      body: "What is the legal definition and punishment for stealing?",
-      query: "what is the definition and punishment for stealing?"
-    },
-    {
-      headline: "Vehicle Towing",
-      body: "Can my car be towed for obstructing traffic?",
-      query: "can my car be towed for obstructing traffic?"
-    },
-    {
-      headline: "Family Law",
-      body: "Am I allowed to remarry after divorce?",
-      query: "am I allowed to remarry after divorce in Nigeria?"
-    },
-    {
-      headline: "Electoral Law",
-      body: "How does the Electoral Act 2022 enforce BVAS usage?",
-      query: "how does the electoral act enforce BVAS usage in voting?"
-    }
-  ];
-
-  // Scroll to bottom when messages update
-  useEffect(() => {
-    if (messages.length > 0 && chatContainerRef.current) {
-      chatContainerRef.current.scrollTo({
-        top: chatContainerRef.current.scrollHeight,
-        behavior: 'smooth'
-      });
-    }
-  }, [messages, isGenerating]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (input.trim() === '' || isGenerating) return;
-    onSendMessage(input);
-    setInput('');
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
+  const userName = currentUser ? currentUser.name.split(' ')[0] : 'Advocate';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100%', overflow: 'hidden', position: 'relative' }}>
@@ -104,30 +21,88 @@ export function ChatAssistant({ messages, onSendMessage, onClearChat, isGenerati
       <div className="chat-container" ref={chatContainerRef}>
         {messages.length === 0 ? (
           <div className="welcome-screen">
-            <div className="welcome-logo">
-              <svg viewBox="0 0 100 100" fill="none" style={{ width: '100%', height: '100%' }}>
-                {/* Custom Nigerian Scale of Justice Icon */}
-                <circle cx="50" cy="50" r="45" stroke="var(--green-accent)" strokeWidth="3" fill="rgba(22, 101, 52, 0.05)" />
-                <path d="M50 20 V80 M30 80 H70" stroke="var(--gold-primary)" strokeWidth="4" strokeLinecap="round" />
-                <path d="M30 35 H70" stroke="var(--gold-primary)" strokeWidth="3" strokeLinecap="round" />
-                {/* Left scale pan */}
-                <path d="M30 35 L20 55 M30 35 L40 55" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <path d="M15 55 H45" stroke="var(--gold-primary)" strokeWidth="3" strokeLinecap="round" />
-                {/* Right scale pan */}
-                <path d="M70 35 L60 55 M70 35 L80 55" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <path d="M55 55 H85" stroke="var(--gold-primary)" strokeWidth="3" strokeLinecap="round" />
-              </svg>
+            <div className="welcome-logo" style={{ marginBottom: '12px' }}>
+              <img src="/lawlink_logo.png" alt="LawLink Logo" style={{ width: '80px', height: '80px', borderRadius: '12px', objectFit: 'contain' }} />
             </div>
             
             <h1 className="welcome-title">
-              LawLink AI: <span>Legal Intake & Intelligence</span>
+              {getGreeting()}, <span>{userName}</span>
             </h1>
-            <p style={{ color: 'var(--gold-primary)', fontWeight: '600', fontSize: '1rem', marginTop: '4px', marginBottom: '8px' }}>
+            <p style={{ color: 'var(--gold-primary)', fontWeight: '600', fontSize: '1.05rem', marginTop: '4px', marginBottom: '6px' }}>
               "The right lawyer. Right when you need one."
             </p>
-            <p className="welcome-desc">
-              Describe your legal issue for AI matter classification, lawyer matching, statutory research, and instant legal guidance under the Nigerian Legal System.
+            <p className="welcome-desc" style={{ maxWidth: '640px' }}>
+              LawLink connects you with verified Nigerian lawyers and provides instant AI legal intake & statutory intelligence.
             </p>
+
+            {/* Main Intake CTA Button */}
+            <div style={{ margin: '16px 0 20px' }}>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={onStartOnboarding}
+                style={{
+                  backgroundColor: 'var(--blue-primary)',
+                  borderColor: 'var(--blue-accent)',
+                  color: '#fff',
+                  padding: '14px 28px',
+                  borderRadius: '30px',
+                  fontSize: '0.95rem',
+                  fontWeight: '600',
+                  boxShadow: '0 8px 24px rgba(37, 99, 235, 0.35)',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <span>🚀 What legal help do you need? (Start Intake)</span>
+              </button>
+            </div>
+
+            {/* Quick Actions Bar */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px', marginBottom: '24px', maxWidth: '680px' }}>
+              <button 
+                type="button" 
+                className="btn-secondary"
+                onClick={() => onSuggestionClick("Find a verified lawyer for my case in Lagos/Nigeria")}
+                style={{ fontSize: '0.78rem', padding: '6px 14px', borderRadius: '20px', backgroundColor: 'rgba(255,255,255,0.03)' }}
+              >
+                🔍 Find a Lawyer
+              </button>
+              <button 
+                type="button" 
+                className="btn-secondary"
+                onClick={() => onSuggestionClick("I need emergency legal help for police arrest or urgent detention")}
+                style={{ fontSize: '0.78rem', padding: '6px 14px', borderRadius: '20px', backgroundColor: 'rgba(239, 68, 68, 0.12)', color: '#fca5a5', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+              >
+                🚨 Emergency Legal Help
+              </button>
+              <button 
+                type="button" 
+                className="btn-secondary"
+                onClick={() => onSuggestionClick("Show my active legal cases and updates")}
+                style={{ fontSize: '0.78rem', padding: '6px 14px', borderRadius: '20px', backgroundColor: 'rgba(255,255,255,0.03)' }}
+              >
+                📂 My Cases
+              </button>
+              <button 
+                type="button" 
+                className="btn-secondary"
+                onClick={() => onSuggestionClick("Book a lawyer consultation appointment")}
+                style={{ fontSize: '0.78rem', padding: '6px 14px', borderRadius: '20px', backgroundColor: 'rgba(255,255,255,0.03)' }}
+              >
+                📅 Appointments
+              </button>
+              <button 
+                type="button" 
+                className="btn-secondary"
+                onClick={() => onSuggestionClick("Open client-lawyer messaging workspace")}
+                style={{ fontSize: '0.78rem', padding: '6px 14px', borderRadius: '20px', backgroundColor: 'rgba(255,255,255,0.03)' }}
+              >
+                💬 Messages
+              </button>
+            </div>
 
             <div className="suggestion-grid">
               {suggestions.map((s, idx) => (

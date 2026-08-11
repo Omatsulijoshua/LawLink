@@ -5,7 +5,7 @@ import { AuthManager } from './components/AuthManager';
 import { DocumentExplorer } from './components/DocumentExplorer';
 import { RightPanel } from './components/RightPanel';
 import { AdminDashboardModal } from './components/AdminDashboardModal';
-import { ArticlesModal } from './components/ArticlesModal';
+import { ClientOnboardingModal } from './components/ClientOnboardingModal';
 import { fetchWithTimeout, getApiEndpoint, getApiUrl } from './utils/api';
 import { Scale, BookOpen, Menu, FileText } from 'lucide-react';
 
@@ -83,6 +83,7 @@ function App() {
   const [showExplorer, setShowExplorer] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
   const [showArticles, setShowArticles] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(true);
   const [showHistoryMobile, setShowHistoryMobile] = useState(false);
   const [showSourcesMobile, setShowSourcesMobile] = useState(false);
@@ -581,8 +582,18 @@ function App() {
           isGenerating={isGenerating}
           onSuggestionClick={handleSuggestionClick}
           currentUser={currentUser}
+          onStartOnboarding={() => setShowOnboarding(true)}
         />
       </div>
+
+      {showOnboarding && (
+        <ClientOnboardingModal
+          onClose={() => setShowOnboarding(false)}
+          onSubmitIntake={(payload) => {
+            handleSendMessage(payload.summaryPrompt);
+          }}
+        />
+      )}
 
       {/* Right Sidebar: Legal Sources & Rationale */}
       <RightPanel 
