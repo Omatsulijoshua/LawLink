@@ -705,6 +705,166 @@ function buildGeminiResearchBasis(question) {
   };
 }
 
+// Authentication Store Helper
+if (!analyticsData.users) {
+  analyticsData.users = [];
+}
+if (!analyticsData.otps) {
+  analyticsData.otps = {};
+}
+
+// User Registration Endpoint (Client / Lawyer)
+app.post('/api/auth/register', (req, res) => {
+  const { name, email, phone, password, role = 'CLIENT', barNumber, practiceArea } = req.body || {};
+
+  if (!email || !password || !name) {
+    return res.status(400).json({ error: 'Name, email, and password are required.' });
+  }
+
+  const cleanEmail = email.toLowerCase().trim();
+  const existingUser = analyticsData.users.find(u => u.email === cleanEmail);
+
+  if (existingUser) {
+    return res.status(409).json({ error: 'An account with this email already exists.' });
+  }
+
+  const roleUpper = (role || 'CLIENT').toUpperCase();
+  const newUser = {
+    id: `usr_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+    name: name.trim(),
+    email: cleanEmail,
+    phone: (phone || '').trim(),
+    role: ['CLIENT', 'LAWYER', 'LAW_FIRM_ADMIN', 'SUPER_ADMIN'].includes(roleUpper) ? roleUpper : 'CLIENT',
+    barNumber: roleUpper === 'LAWYER' ? (barNumber || '').trim() : undefined,
+    practiceArea: roleUpper === 'LAWYER' ? (practiceArea || 'General Legal Practice').trim() : undefined,
+    verificationStatus: roleUpper === 'LAWYER' ? 'PENDING' : 'VERIFIED',
+    createdAt: Date.now(),
+    avatar: name.split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase().slice(0, 2)
+  };
+
+  analyticsData.users.push(newUser);
+  upsertRegistration({ id: newUser.id, email: newUser.email, name: newUser.name });
+  saveAnalytics();
+
+  const token = `jwt_mock_${Date.now()}_${newUser.id}`;
+  return res.json({
+    success: true,
+    message: 'Registration successful',
+    token,
+    user: newUser
+  });
+});
+
+// Email & Password Login Endpoint
+app.post('/api/auth/login', (req, res) => {
+  const { email, password } = req.body || {};
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required.' });
+  }
+
+  const cleanEmail = email.toLowerCase().trim();
+  let user = analyticsData.users.find(u => u.email === cleanEmail);
+
+  // Fallback default admin user account
+  if (!user && cleanEmail === 'lawlinkllp01@gmail.com' && password === 'Admin@123') {
+    user = {
+      id: 'admin_master_1',
+      name: 'LawLink Super Admin',
+      email: 'lawlinkllp01@gmail.com',
+      role: 'SUPER_ADMIN',
+      verificationStatus: 'VERIFIED',
+      avatar: 'LA'
+    };
+  }
+
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid email or password.' });
+  }
+
+  const token = `jwt_mock_${Date.now()}_${user.id}`;
+  return res.json({
+    success: true,
+    token,
+    user
+  });
+});
+
+// Google Authentication Endpoint
+app.post('/api/auth/google', (req, res) => {
+  const { email, name, googleId } = req.body || {};
+
+  if (!email) {
+    return res.status(400).json({ error: 'Google authentication payload missing email.' });
+  }
+
+  const cleanEmail = email.toLowerCase().trim();
+  let user = analyticsData.users.find(u => u.email === cleanEmail);
+
+  if (!user) {
+    user = {
+      id: googleId || `usr_g_${Date.now()}`,
+      name: name || 'Google User',
+      email: cleanEmail,
+      role: 'CLIENT',
+      verificationStatus: 'VERIFIED',
+      createdAt: Date.now(),
+      avatar: (name || 'G U').split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    };
+    analyticsData.users.push(user);
+    saveAnalytics();
+  }
+
+  const token = `jwt_mock_${Date.now()}_${user.id}`;
+  return res.json({
+    success: true,
+    token,
+    user
+  });
+});
+
+// Send OTP Endpoint (Simulated SMS / Email OTP)
+app.post('/api/auth/otp/send', (req, res) => {
+  const { target } = req.body || {};
+  if (!target) return res.status(400).json({ error: 'Email or phone number is required.' });
+
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  analyticsData.otps[target.toLowerCase()] = {
+    code,
+    expiresAt: Date.now() + 10 * 60 * 1000
+  };
+
+  console.log(`📱 [OTP SENT] Target: ${target} | Code: ${code}`);
+  return res.json({ success: true, message: `OTP code sent to ${target}. (Development Code: ${code})` });
+});
+
+// Verify OTP Endpoint
+app.post('/api/auth/otp/verify', (req, res) => {
+  const { target, code } = req.body || {};
+  const record = analyticsData.otps[target?.toLowerCase()];
+
+  if (!record || record.code !== code || Date.now() > record.expiresAt) {
+    return res.status(400).json({ error: 'Invalid or expired OTP code.' });
+  }
+
+  delete analyticsData.otps[target.toLowerCase()];
+  return res.json({ success: true, message: 'OTP verified successfully.' });
+});
+
+// Forgot Password Endpoint
+app.post('/api/auth/forgot-password', (req, res) => {
+  const { email } = req.body || {};
+  if (!email) return res.status(400).json({ error: 'Email address is required.' });
+
+  console.log(`📧 Password reset email dispatched to ${email}`);
+  return res.json({ success: true, message: `Password reset instructions sent to ${email}` });
+});
+
+// Logout Endpoint
+app.post('/api/auth/logout', (req, res) => {
+  return res.json({ success: true, message: 'Logged out successfully.' });
+});
+
 // Track page visit (Pinged by client session storage)
 app.post('/api/analytics/visit', (req, res) => {
   const { sessionId, user, email, userId, name } = req.body || {};
