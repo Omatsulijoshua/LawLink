@@ -1,0 +1,37 @@
+name: LawLink CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Marketplace Dependencies
+        run: npm ci
+
+      - name: Build Marketplace App
+        run: npm run build
+
+      - name: Install Admin Console Dependencies
+        run: |
+          cd admin
+          npm ci --legacy-peer-deps
+
+      - name: Build Admin Console App
+        run: |
+          cd admin
+          npm run build
