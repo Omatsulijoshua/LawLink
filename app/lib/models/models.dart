@@ -12,6 +12,10 @@ class Lawyer {
   final int consultationFee;
   final int casesTaken;
   final int casesCompleted;
+  final String entityType; // 'LAW_FIRM' | 'SOLO_PRACTITIONER'
+  final bool showAssociateRoster;
+  final List<Map<String, String>> associateRoster;
+  final Map<String, String> socialLinks;
   final bool isVerified;
   final bool isEmergencyOnCall;
   final String bio;
@@ -30,6 +34,17 @@ class Lawyer {
     required this.consultationFee,
     this.casesTaken = 148,
     this.casesCompleted = 142,
+    this.entityType = 'LAW_FIRM',
+    this.showAssociateRoster = true,
+    this.associateRoster = const [
+      {'name': 'Barrister Tunde Bakare', 'title': 'Senior Associate', 'barNumber': 'SCN/099128'},
+      {'name': 'Barrister Ngozi Eze', 'title': 'Junior Associate Counsel', 'barNumber': 'SCN/114920'}
+    ],
+    this.socialLinks = const {
+      'linkedin': 'https://linkedin.com',
+      'twitter': 'https://x.com',
+      'website': 'https://firm.ng'
+    },
     this.isVerified = true,
     this.isEmergencyOnCall = true,
     required this.bio,

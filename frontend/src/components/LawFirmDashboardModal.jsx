@@ -47,6 +47,43 @@ export function LawFirmDashboardModal({ onClose }) {
           </div>
         </div>
 
+        {/* Firm Settings & Public Profile Showcase Controls */}
+        <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--border-light)', borderRadius: '10px', padding: '20px', marginBottom: '24px' }}>
+          <h4 style={{ fontSize: '0.9rem', color: 'var(--gold-primary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '14px' }}>
+            ⚙️ Public Profile & Showcase Settings
+          </h4>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            {/* Social Media Links */}
+            <div>
+              <label style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px', fontWeight: '600' }}>
+                Linked Social Media & Web Profiles
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <input type="text" className="chat-input" placeholder="LinkedIn: https://linkedin.com/in/..." defaultValue="https://linkedin.com/in/bellopartners" style={{ borderRadius: '6px', height: '34px', padding: '0 10px', fontSize: '0.8rem' }} />
+                <input type="text" className="chat-input" placeholder="Twitter/X: https://x.com/..." defaultValue="https://x.com/bellopartners" style={{ borderRadius: '6px', height: '34px', padding: '0 10px', fontSize: '0.8rem' }} />
+                <input type="text" className="chat-input" placeholder="Website: https://..." defaultValue="https://bellopartners.law.ng" style={{ borderRadius: '6px', height: '34px', padding: '0 10px', fontSize: '0.8rem' }} />
+              </div>
+            </div>
+
+            {/* Optional Roster Showcase Toggle */}
+            <div>
+              <label style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px', fontWeight: '600' }}>
+                Optional Public Profile Features
+              </label>
+              <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <strong style={{ fontSize: '0.82rem', color: '#fff', display: 'block' }}>Show Associate Lawyers List on Public Profile</strong>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Allow public visitors to see all active attorneys in your law firm roster.</span>
+                  </div>
+                  <input type="checkbox" defaultChecked style={{ width: '18px', height: '18px', cursor: 'pointer' }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Firm Associate Lawyers Roster */}
         <h4 style={{ fontSize: '0.9rem', color: 'var(--gold-primary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '12px' }}>
           Firm Counsel Roster & Availability

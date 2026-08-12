@@ -53,14 +53,51 @@ export function LawyerProfileModal({ lawyer, onClose, onSelectAction }) {
                   gap: '4px'
                 }}>
                   <CheckCircle size={12} />
-                  <span>Verified Lawyer</span>
+                  <span>Verified Counsel</span>
                 </span>
               )}
+
+              {/* Entity Type Badge */}
+              <span style={{
+                backgroundColor: lawyer.entityType === 'LAW_FIRM' ? 'rgba(217, 119, 6, 0.18)' : 'rgba(59, 130, 246, 0.18)',
+                color: lawyer.entityType === 'LAW_FIRM' ? '#fbbf24' : '#60a5fa',
+                border: `1px solid ${lawyer.entityType === 'LAW_FIRM' ? 'rgba(217, 119, 6, 0.4)' : 'rgba(59, 130, 246, 0.4)'}`,
+                padding: '2px 10px',
+                borderRadius: '12px',
+                fontSize: '0.72rem',
+                fontWeight: '600',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                {lawyer.entityType === 'LAW_FIRM' ? '🏢 Law Firm Partnership' : '⚖️ Solo Practitioner'}
+              </span>
             </div>
 
             <p style={{ fontSize: '0.88rem', color: 'var(--gold-primary)', fontWeight: '600', marginTop: '2px' }}>
               {lawyer.title} • {lawyer.lawFirm}
             </p>
+
+            {/* Linked Social Media Accounts */}
+            {lawyer.socialLinks && (
+              <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
+                {lawyer.socialLinks.linkedin && (
+                  <a href={lawyer.socialLinks.linkedin} target="_blank" rel="noreferrer" style={{ backgroundColor: 'rgba(255, 255, 255, 0.06)', color: '#60a5fa', padding: '4px 8px', borderRadius: '6px', fontSize: '0.72rem', textDecoration: 'none', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    💼 LinkedIn
+                  </a>
+                )}
+                {lawyer.socialLinks.twitter && (
+                  <a href={lawyer.socialLinks.twitter} target="_blank" rel="noreferrer" style={{ backgroundColor: 'rgba(255, 255, 255, 0.06)', color: '#38bdf8', padding: '4px 8px', borderRadius: '6px', fontSize: '0.72rem', textDecoration: 'none', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    🐦 X / Twitter
+                  </a>
+                )}
+                {lawyer.socialLinks.website && (
+                  <a href={lawyer.socialLinks.website} target="_blank" rel="noreferrer" style={{ backgroundColor: 'rgba(255, 255, 255, 0.06)', color: '#34d399', padding: '4px 8px', borderRadius: '6px', fontSize: '0.72rem', textDecoration: 'none', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    🌐 Official Website
+                  </a>
+                )}
+              </div>
+            )}
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '8px' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -78,6 +115,32 @@ export function LawyerProfileModal({ lawyer, onClose, onSelectAction }) {
             </div>
           </div>
         </div>
+
+        {/* Optional Law Firm Associate Roster Display */}
+        {lawyer.entityType === 'LAW_FIRM' && lawyer.showAssociateRoster !== false && (
+          <div style={{ marginBottom: '20px', backgroundColor: 'rgba(217, 119, 6, 0.06)', border: '1px solid rgba(217, 119, 6, 0.25)', borderRadius: '10px', padding: '14px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <h4 style={{ fontSize: '0.82rem', color: '#fbbf24', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.5px', margin: 0 }}>
+                🏢 Law Firm Associate Lawyers Roster
+              </h4>
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Optional Firm Showcase Enabled</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {(lawyer.associateRoster || [
+                { id: 'a1', name: 'Barrister Tunde Bakare', title: 'Senior Litigation Associate', barNumber: 'SCN/099128' },
+                { id: 'a2', name: 'Barrister Ngozi Eze', title: 'Junior Associate Counsel', barNumber: 'SCN/114920' }
+              ]).map((assoc) => (
+                <div key={assoc.id || assoc.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 10px', backgroundColor: 'rgba(0, 0, 0, 0.2)', borderRadius: '6px' }}>
+                  <div>
+                    <span style={{ fontSize: '0.82rem', fontWeight: '600', color: '#fff', display: 'block' }}>{assoc.name}</span>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{assoc.title}</span>
+                  </div>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--blue-accent)', fontFamily: 'monospace', fontWeight: '600' }}>{assoc.barNumber}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Public Case Track Record Banner */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', backgroundColor: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '10px', padding: '14px', marginBottom: '20px' }}>

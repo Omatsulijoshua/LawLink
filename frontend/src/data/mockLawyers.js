@@ -5,6 +5,19 @@ export const INITIAL_LAWYERS = [
     title: 'Senior Advocate of Nigeria (SAN)',
     lawFirm: 'Bello & Associates',
     barNumber: 'SCN/048291',
+    entityType: 'LAW_FIRM', // 'LAW_FIRM' | 'SOLO_PRACTITIONER'
+    showAssociateRoster: true,
+    associateRoster: [
+      { id: 'assoc-1', name: 'Barrister Tunde Bakare', title: 'Senior Litigation Associate', barNumber: 'SCN/099128', specialization: 'Criminal Litigation' },
+      { id: 'assoc-2', name: 'Barrister Ngozi Eze', title: 'Junior Associate Counsel', barNumber: 'SCN/114920', specialization: 'Human Rights Enforcement' },
+      { id: 'assoc-3', name: 'Barrister Fatima Bello', title: 'Commercial Associate', barNumber: 'SCN/120948', specialization: 'Civil Procedure' }
+    ],
+    socialLinks: {
+      linkedin: 'https://linkedin.com/in/nnamdi-bello-san',
+      twitter: 'https://x.com/nnamdibellosan',
+      website: 'https://bellopartners.law.ng',
+      whatsapp: '+2348030001122'
+    },
     practiceArea: 'Constitutional Rights',
     secondaryPracticeAreas: ['Criminal Defense', 'Civil Litigation'],
     state: 'Lagos',
