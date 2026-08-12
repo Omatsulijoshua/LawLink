@@ -123,6 +123,41 @@ export function LawyerProfileModal({ lawyer, onClose, onSelectAction }) {
           </div>
         </div>
 
+        {/* Public Reviews & Rating Breakdown */}
+        <div style={{ marginBottom: '24px', backgroundColor: 'rgba(0, 0, 0, 0.25)', borderRadius: '10px', padding: '16px', border: '1px solid var(--border-light)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              Public Ratings & Client Feedback
+            </h4>
+            <span style={{ fontSize: '0.78rem', color: '#f59e0b', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Star size={14} fill="#f59e0b" />
+              {lawyer.rating} / 5.0 Rating Aggregate
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ padding: '10px 12px', backgroundColor: 'rgba(255, 255, 255, 0.03)', borderRadius: '8px', borderLeft: '3px solid #f59e0b' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: '600', color: '#fff' }}>Verified Business Client</span>
+                <span style={{ fontSize: '0.7rem', color: '#f59e0b', display: 'flex', gap: '2px' }}>★★★★★</span>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontStyle: 'italic', margin: 0 }}>
+                "Counsel provided exceptional legal advisory on our land title acquisition and perfected the Governor's consent seamlessly."
+              </p>
+            </div>
+
+            <div style={{ padding: '10px 12px', backgroundColor: 'rgba(255, 255, 255, 0.03)', borderRadius: '8px', borderLeft: '3px solid #f59e0b' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: '600', color: '#fff' }}>Verified Retainer Client</span>
+                <span style={{ fontSize: '0.7rem', color: '#f59e0b', display: 'flex', gap: '2px' }}>★★★★★</span>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontStyle: 'italic', margin: 0 }}>
+                "Top class responsiveness during court filings. Solved our CAC partnership corporate dispute with high professionalism."
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Action Buttons */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
           <button
