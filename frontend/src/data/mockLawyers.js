@@ -13,6 +13,8 @@ export const INITIAL_LAWYERS = [
     languages: ['English', 'Igbo', 'Yoruba'],
     rating: 4.9,
     reviewsCount: 42,
+    casesTaken: 148,
+    casesCompleted: 142,
     consultationFee: 25000,
     currency: 'NGN',
     emergencyAvailable: true,

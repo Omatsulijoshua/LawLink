@@ -10,6 +10,8 @@ class Lawyer {
   final int reviewsCount;
   final int experienceYears;
   final int consultationFee;
+  final int casesTaken;
+  final int casesCompleted;
   final bool isVerified;
   final bool isEmergencyOnCall;
   final String bio;
@@ -26,6 +28,8 @@ class Lawyer {
     required this.reviewsCount,
     required this.experienceYears,
     required this.consultationFee,
+    this.casesTaken = 148,
+    this.casesCompleted = 142,
     this.isVerified = true,
     this.isEmergencyOnCall = true,
     required this.bio,
