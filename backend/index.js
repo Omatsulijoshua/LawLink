@@ -376,24 +376,31 @@ app.post('/api/admin/ai/keys', (req, res) => {
 });
 
 app.post('/api/auth/register', (req, res) => {
-  const { name, email, phone, password, role = 'CLIENT', barNumber, practiceArea } = req.body || {};
+  const { name, email, phone, password, role = 'CLIENT', barNumber, practiceArea, cacNumber, firmAddress, associateCount } = req.body || {};
   if (!email || !password || !name) {
     return res.status(400).json({ error: 'Name, email, and password are required.' });
   }
 
   const cleanEmail = email.toLowerCase().trim();
+  const userRole = (role || 'CLIENT').toUpperCase();
+  const isBusiness = userRole === 'LAW_FIRM_ADMIN' || userRole === 'LAWYER';
+
   const newUser = {
     id: `usr_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
     name: name.trim(),
     email: cleanEmail,
     phone: (phone || '').trim(),
-    role: (role || 'CLIENT').toUpperCase(),
+    role: userRole,
     barNumber,
     practiceArea,
-    verificationStatus: role === 'LAWYER' ? 'PENDING' : 'VERIFIED',
+    cacNumber,
+    firmAddress,
+    associateCount,
+    verificationStatus: isBusiness ? 'PENDING' : 'VERIFIED',
     createdAt: Date.now()
   };
 
+  analyticsData.users = analyticsData.users || [];
   analyticsData.users.push(newUser);
   saveAnalytics();
   return res.json({ success: true, token: `jwt_mock_${Date.now()}`, user: newUser });

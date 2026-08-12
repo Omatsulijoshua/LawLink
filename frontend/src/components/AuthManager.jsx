@@ -17,6 +17,9 @@ export function AuthManager({ onUserChange, currentUser }) {
   const [phone, setPhone] = useState('');
   const [barNumber, setBarNumber] = useState('');
   const [practiceArea, setPracticeArea] = useState('Corporate Law');
+  const [cacNumber, setCacNumber] = useState('');
+  const [firmAddress, setFirmAddress] = useState('');
+  const [associateCount, setAssociateCount] = useState('5-10 Lawyers');
 
   // Monitor Authentication Session
   useEffect(() => {
@@ -95,14 +98,21 @@ export function AuthManager({ onUserChange, currentUser }) {
     const isRegister = activeTab !== 'login';
     const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
 
+    let role = 'CLIENT';
+    if (activeTab === 'register_lawyer') role = 'LAWYER';
+    if (activeTab === 'register_firm') role = 'LAW_FIRM_ADMIN';
+
     const payload = isRegister ? {
       name,
       email,
       phone,
       password,
-      role: activeTab === 'register_lawyer' ? 'LAWYER' : 'CLIENT',
-      barNumber: activeTab === 'register_lawyer' ? barNumber : undefined,
-      practiceArea: activeTab === 'register_lawyer' ? practiceArea : undefined
+      role,
+      barNumber: (activeTab === 'register_lawyer' || activeTab === 'register_firm') ? barNumber : undefined,
+      practiceArea: (activeTab === 'register_lawyer' || activeTab === 'register_firm') ? practiceArea : undefined,
+      cacNumber: activeTab === 'register_firm' ? cacNumber : undefined,
+      firmAddress: activeTab === 'register_firm' ? firmAddress : undefined,
+      associateCount: activeTab === 'register_firm' ? associateCount : undefined
     } : { email, password };
 
     try {
@@ -123,14 +133,14 @@ export function AuthManager({ onUserChange, currentUser }) {
         setShowModal(false);
       } else {
         // Development local fallback
-        const role = activeTab === 'register_lawyer' ? 'LAWYER' : (email.includes('lawyer') ? 'LAWYER' : 'CLIENT');
         const userObj = {
           id: `usr_${Date.now()}`,
           name: isRegister ? name : (email.split('@')[0] || 'LawLink User'),
           email,
           role,
-          practiceArea: role === 'LAWYER' ? (practiceArea || 'Litigation') : undefined,
-          verificationStatus: role === 'LAWYER' ? 'PENDING' : 'VERIFIED',
+          practiceArea: role !== 'CLIENT' ? (practiceArea || 'Litigation & Corporate') : undefined,
+          cacNumber: role === 'LAW_FIRM_ADMIN' ? cacNumber : undefined,
+          verificationStatus: role !== 'CLIENT' ? 'PENDING' : 'VERIFIED',
           avatar: (name || email).slice(0, 2).toUpperCase()
         };
         localStorage.setItem('lawlink_user', JSON.stringify(userObj));
@@ -160,9 +170,10 @@ export function AuthManager({ onUserChange, currentUser }) {
     switch (role) {
       case 'LAWYER':
         return <span style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', padding: '2px 8px', borderRadius: '12px', fontSize: '0.68rem', fontWeight: '600', marginLeft: '6px' }}>⚖️ Lawyer</span>;
-      case 'SUPER_ADMIN':
       case 'LAW_FIRM_ADMIN':
-        return <span style={{ backgroundColor: 'rgba(217, 119, 6, 0.2)', color: '#fbbf24', border: '1px solid rgba(217, 119, 6, 0.3)', padding: '2px 8px', borderRadius: '12px', fontSize: '0.68rem', fontWeight: '600', marginLeft: '6px' }}>🛡️ Admin</span>;
+        return <span style={{ backgroundColor: 'rgba(217, 119, 6, 0.2)', color: '#fbbf24', border: '1px solid rgba(217, 119, 6, 0.3)', padding: '2px 8px', borderRadius: '12px', fontSize: '0.68rem', fontWeight: '600', marginLeft: '6px' }}>🏢 Law Firm Business</span>;
+      case 'SUPER_ADMIN':
+        return <span style={{ backgroundColor: 'rgba(239, 68, 68, 0.2)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '2px 8px', borderRadius: '12px', fontSize: '0.68rem', fontWeight: '600', marginLeft: '6px' }}>🛡️ Admin</span>;
       default:
         return <span style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.25)', padding: '2px 8px', borderRadius: '12px', fontSize: '0.68rem', fontWeight: '600', marginLeft: '6px' }}>👤 Client</span>;
     }
@@ -208,7 +219,7 @@ export function AuthManager({ onUserChange, currentUser }) {
 
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="auth-modal" style={{ maxWidth: '440px', padding: '28px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="auth-modal" style={{ maxWidth: '480px', padding: '26px' }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px', color: 'var(--gold-primary)' }}>
               <ShieldCheck size={44} />
             </div>
@@ -216,32 +227,39 @@ export function AuthManager({ onUserChange, currentUser }) {
             <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', textAlign: 'center', marginBottom: '4px' }}>
               LawLink Portal
             </h3>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '20px' }}>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '18px' }}>
               The right lawyer. Right when you need one.
             </p>
 
             {/* Modal Navigation Tabs */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px', backgroundColor: 'rgba(255, 255, 255, 0.04)', padding: '4px', borderRadius: '8px', marginBottom: '20px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '4px', backgroundColor: 'rgba(255, 255, 255, 0.04)', padding: '4px', borderRadius: '8px', marginBottom: '18px' }}>
               <button 
                 type="button" 
                 onClick={() => { setActiveTab('login'); setErrorMessage(''); }}
-                style={{ background: activeTab === 'login' ? 'var(--blue-primary)' : 'none', border: 'none', color: '#fff', padding: '8px 4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '600', cursor: 'pointer' }}
+                style={{ background: activeTab === 'login' ? 'var(--blue-primary)' : 'none', border: 'none', color: '#fff', padding: '7px 2px', borderRadius: '6px', fontSize: '0.7rem', fontWeight: '600', cursor: 'pointer' }}
               >
                 Sign In
               </button>
               <button 
                 type="button" 
                 onClick={() => { setActiveTab('register_client'); setErrorMessage(''); }}
-                style={{ background: activeTab === 'register_client' ? 'var(--blue-primary)' : 'none', border: 'none', color: '#fff', padding: '8px 4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '600', cursor: 'pointer' }}
+                style={{ background: activeTab === 'register_client' ? 'var(--blue-primary)' : 'none', border: 'none', color: '#fff', padding: '7px 2px', borderRadius: '6px', fontSize: '0.7rem', fontWeight: '600', cursor: 'pointer' }}
               >
-                Client Signup
+                Client
               </button>
               <button 
                 type="button" 
                 onClick={() => { setActiveTab('register_lawyer'); setErrorMessage(''); }}
-                style={{ background: activeTab === 'register_lawyer' ? 'var(--blue-primary)' : 'none', border: 'none', color: '#fff', padding: '8px 4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '600', cursor: 'pointer' }}
+                style={{ background: activeTab === 'register_lawyer' ? 'var(--blue-primary)' : 'none', border: 'none', color: '#fff', padding: '7px 2px', borderRadius: '6px', fontSize: '0.7rem', fontWeight: '600', cursor: 'pointer' }}
               >
-                Lawyer Signup
+                Solo Counsel
+              </button>
+              <button 
+                type="button" 
+                onClick={() => { setActiveTab('register_firm'); setErrorMessage(''); }}
+                style={{ background: activeTab === 'register_firm' ? 'var(--gold-primary)' : 'none', border: 'none', color: '#fff', padding: '7px 2px', borderRadius: '6px', fontSize: '0.7rem', fontWeight: '600', cursor: 'pointer' }}
+              >
+                Law Firm Business
               </button>
             </div>
 
@@ -251,32 +269,67 @@ export function AuthManager({ onUserChange, currentUser }) {
               </div>
             )}
 
-            <form onSubmit={handleEmailAuth} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <form onSubmit={handleEmailAuth} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {activeTab !== 'login' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Full Name</label>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                    {activeTab === 'register_firm' ? 'Law Firm / Legal Business Name' : 'Full Name'}
+                  </label>
                   <input 
                     type="text" 
                     className="chat-input"
-                    placeholder="e.g. Barrister Emeka Okafor"
+                    placeholder={activeTab === 'register_firm' ? 'e.g. Bello & Partners Legal Practitioners LLP' : 'e.g. Barrister Emeka Okafor'}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required 
-                    style={{ borderRadius: '6px', height: '38px', padding: '0 12px', fontSize: '0.85rem' }}
+                    style={{ borderRadius: '6px', height: '36px', padding: '0 12px', fontSize: '0.85rem' }}
                   />
                 </div>
               )}
 
+              {activeTab === 'register_firm' && (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>CAC Business RC Number</label>
+                    <input 
+                      type="text" 
+                      className="chat-input"
+                      placeholder="e.g. RC-1049281"
+                      value={cacNumber}
+                      onChange={(e) => setCacNumber(e.target.value)}
+                      required 
+                      style={{ borderRadius: '6px', height: '36px', padding: '0 12px', fontSize: '0.85rem' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Associate Roster Size</label>
+                    <select
+                      className="chat-input"
+                      value={associateCount}
+                      onChange={(e) => setAssociateCount(e.target.value)}
+                      style={{ borderRadius: '6px', height: '36px', padding: '0 8px', fontSize: '0.8rem', backgroundColor: 'var(--bg-secondary)', color: '#fff' }}
+                    >
+                      <option value="1-5 Lawyers">1 - 5 Lawyers</option>
+                      <option value="5-15 Lawyers">5 - 15 Lawyers</option>
+                      <option value="15-50 Lawyers">15 - 50 Lawyers</option>
+                      <option value="50+ SAN Firm">50+ Lawyers (SAN)</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Email Address</label>
+                <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                  {activeTab === 'register_firm' ? 'Corporate Firm Email' : 'Email Address'}
+                </label>
                 <input 
                   type="email" 
                   className="chat-input"
-                  placeholder="name@example.com"
+                  placeholder="contact@firm.ng"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required 
-                  style={{ borderRadius: '6px', height: '38px', padding: '0 12px', fontSize: '0.85rem' }}
+                  style={{ borderRadius: '6px', height: '36px', padding: '0 12px', fontSize: '0.85rem' }}
                 />
               </div>
 
@@ -289,15 +342,17 @@ export function AuthManager({ onUserChange, currentUser }) {
                     placeholder="+234 800 000 0000"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    style={{ borderRadius: '6px', height: '38px', padding: '0 12px', fontSize: '0.85rem' }}
+                    style={{ borderRadius: '6px', height: '36px', padding: '0 12px', fontSize: '0.85rem' }}
                   />
                 </div>
               )}
 
-              {activeTab === 'register_lawyer' && (
+              {(activeTab === 'register_lawyer' || activeTab === 'register_firm') && (
                 <>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Supreme Court / Call to Bar Enrollment No.</label>
+                    <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                      {activeTab === 'register_firm' ? 'Managing Partner SCN Enrollment No.' : 'Supreme Court Call to Bar No.'}
+                    </label>
                     <input 
                       type="text" 
                       className="chat-input"
@@ -305,16 +360,16 @@ export function AuthManager({ onUserChange, currentUser }) {
                       value={barNumber}
                       onChange={(e) => setBarNumber(e.target.value)}
                       required 
-                      style={{ borderRadius: '6px', height: '38px', padding: '0 12px', fontSize: '0.85rem' }}
+                      style={{ borderRadius: '6px', height: '36px', padding: '0 12px', fontSize: '0.85rem' }}
                     />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Primary Practice Area</label>
+                    <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Primary Practice Specialization</label>
                     <select 
                       className="chat-input"
                       value={practiceArea}
                       onChange={(e) => setPracticeArea(e.target.value)}
-                      style={{ borderRadius: '6px', height: '38px', padding: '0 12px', fontSize: '0.85rem', color: 'var(--text-primary)', backgroundColor: 'var(--bg-secondary)' }}
+                      style={{ borderRadius: '6px', height: '36px', padding: '0 12px', fontSize: '0.85rem', color: 'var(--text-primary)', backgroundColor: 'var(--bg-secondary)' }}
                     >
                       <option value="Property & Land Law">Property & Land Law</option>
                       <option value="Criminal Defense">Criminal Defense</option>
@@ -336,7 +391,7 @@ export function AuthManager({ onUserChange, currentUser }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required 
-                  style={{ borderRadius: '6px', height: '38px', padding: '0 12px', fontSize: '0.85rem' }}
+                  style={{ borderRadius: '6px', height: '36px', padding: '0 12px', fontSize: '0.85rem' }}
                 />
               </div>
 
@@ -344,9 +399,15 @@ export function AuthManager({ onUserChange, currentUser }) {
                 type="submit" 
                 className="btn-secondary" 
                 disabled={isSubmitting}
-                style={{ backgroundColor: 'var(--blue-primary)', borderColor: 'var(--blue-accent)', color: '#fff', height: '40px', fontWeight: '600', marginTop: '6px' }}
+                style={{ backgroundColor: activeTab === 'register_firm' ? 'var(--gold-primary)' : 'var(--blue-primary)', borderColor: 'var(--blue-accent)', color: '#fff', height: '40px', fontWeight: '600', marginTop: '6px' }}
               >
-                {isSubmitting ? 'Processing...' : (activeTab === 'login' ? 'Sign In' : (activeTab === 'register_lawyer' ? 'Submit Lawyer Application' : 'Create Client Account'))}
+                {isSubmitting 
+                  ? 'Processing...' 
+                  : (activeTab === 'login' 
+                      ? 'Sign In' 
+                      : (activeTab === 'register_firm' 
+                          ? 'Submit Law Firm Business Application' 
+                          : (activeTab === 'register_lawyer' ? 'Submit Solo Lawyer Application' : 'Create Client Account')))}
               </button>
             </form>
 

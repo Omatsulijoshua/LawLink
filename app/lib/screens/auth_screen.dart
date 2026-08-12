@@ -102,18 +102,24 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
             children: [
               ChoiceChip(
-                label: const Text('Client Account'),
+                label: const Text('Client'),
                 selected: _selectedRole == 'CLIENT',
                 onSelected: (val) => setState(() => _selectedRole = 'CLIENT'),
               ),
-              const SizedBox(width: 10),
               ChoiceChip(
-                label: const Text('Lawyer Account'),
+                label: const Text('Solo Counsel'),
                 selected: _selectedRole == 'LAWYER',
                 onSelected: (val) => setState(() => _selectedRole = 'LAWYER'),
+              ),
+              ChoiceChip(
+                label: const Text('Law Firm Business'),
+                selected: _selectedRole == 'LAW_FIRM_ADMIN',
+                onSelected: (val) => setState(() => _selectedRole = 'LAW_FIRM_ADMIN'),
               ),
             ],
           ),
@@ -121,12 +127,19 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
 
           TextField(
             controller: _nameController,
-            decoration: const InputDecoration(labelText: 'Full Legal Name', border: OutlineInputBorder()),
+            decoration: InputDecoration(
+              labelText: _selectedRole == 'LAW_FIRM_ADMIN' ? 'Law Firm Business Name' : 'Full Legal Name',
+              hintText: _selectedRole == 'LAW_FIRM_ADMIN' ? 'e.g. Bello & Partners LLP' : 'e.g. Barrister Emeka Okafor',
+              border: const OutlineInputBorder(),
+            ),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email Address', border: OutlineInputBorder()),
+            decoration: InputDecoration(
+              labelText: _selectedRole == 'LAW_FIRM_ADMIN' ? 'Corporate Firm Email' : 'Email Address',
+              border: const OutlineInputBorder(),
+            ),
           ),
           const SizedBox(height: 12),
           TextField(
@@ -136,13 +149,24 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
           ),
           const SizedBox(height: 12),
 
-          if (_selectedRole == 'LAWYER') ...[
+          if (_selectedRole == 'LAW_FIRM_ADMIN') ...[
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'CAC Business Registration RC No.',
+                hintText: 'e.g. RC-1049281 or BN-918234',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+
+          if (_selectedRole == 'LAWYER' || _selectedRole == 'LAW_FIRM_ADMIN') ...[
             TextField(
               controller: _barNoController,
-              decoration: const InputDecoration(
-                labelText: 'Supreme Court Call to Bar No. (SCN)',
+              decoration: InputDecoration(
+                labelText: _selectedRole == 'LAW_FIRM_ADMIN' ? 'Managing Partner Call to Bar SCN No.' : 'Supreme Court Call to Bar No. (SCN)',
                 hintText: 'e.g. SCN/048291',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 12),
@@ -151,16 +175,19 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
           ElevatedButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Registered as $_selectedRole successfully!')),
+                SnackBar(content: Text('Registered as ${_selectedRole == "LAW_FIRM_ADMIN" ? "Law Firm Business" : _selectedRole} successfully! Verification pending.')),
               );
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: LawLinkTheme.emeraldGreen,
+              backgroundColor: _selectedRole == 'LAW_FIRM_ADMIN' ? LawLinkTheme.amberGold : LawLinkTheme.emeraldGreen,
               minimumSize: const Size.fromHeight(48),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
-            child: Text('Register as $_selectedRole', style: const TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(
+              _selectedRole == 'LAW_FIRM_ADMIN' ? 'Register Law Firm Business' : 'Register Account',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
